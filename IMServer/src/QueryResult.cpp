@@ -5,7 +5,7 @@ QueryResult::QueryResult(MYSQL_RES* res = NULL, MyLong rowCount = 0, uint32_t co
 	_currentRow.resize(_columnCount);
 	_fieldName.reserve(_columnCount);
 
-	//获取 每个列的信息的数组
+	//获取 每个列的信息
 	MYSQL_FIELD* fields = mysql_fetch_fields(_res);
 	for (size_t i = 0; i < columnCount; i++)
 	{
@@ -16,13 +16,12 @@ QueryResult::QueryResult(MYSQL_RES* res = NULL, MyLong rowCount = 0, uint32_t co
 		// 设置名称
 		_currentRow[i].setName(fields[i].name);
 	}
-
 }
 
 
 QueryResult :: ~QueryResult()
 {
-
+	end();
 }
 
 bool QueryResult::nextRow()
@@ -38,7 +37,7 @@ bool QueryResult::nextRow()
 	}
 
 	// 获取每个列中 数据的长度
-	unsigned long* pFieldLength = mysql_fetch_lengths(_res);
+	//unsigned long* pFieldLength = mysql_fetch_lengths(_res);
 	for (size_t i = 0; i < _columnCount; i++)
 	{
 		if (NULL == row[i])
@@ -48,6 +47,7 @@ bool QueryResult::nextRow()
 		}
 		else
 		{
+			_currentRow[i].setValue(row[i]);
 			//设置 field的值
 		}
 	}

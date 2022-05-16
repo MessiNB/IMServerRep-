@@ -1,5 +1,5 @@
 #include "MysqlBusiness.h"
-
+#include <sstream>
 MysqlManager::MysqlManager()
 {
 	sTableInfo info;
@@ -20,7 +20,7 @@ MysqlManager::MysqlManager()
 	info.mFields["user_email"] = { "user_email", "varchar(256) DEFAULT NULL  COMMENT '邮箱' ", "varcahr(256)" };
 	info.mFields["user_email"] = { "user_email", "datetime NOTNULL  COMMENT '注册时间' ", "datetime" };
 	info.sKey = "PRIMARY KEY (user_id), INDEX user_id (user_id), KEY id (id)";
-	_mTables.insert(PairTAble(info.sName,info));
+	_mTables.insert(PairTAble(info.sName, info));
 
 	//聊天内容
 	info.mapField.clear();
@@ -61,9 +61,9 @@ bool MysqlManager::init(const string& host, const string& user, const string& pw
 	}
 	// TODO: 表是否存在
 	std::map < std::string, MysqlManager::sTableInfo>::iterator it = _mTables.begin();
-	for ( ; it < _mTables.end(); it++)
+	for (; it < _mTables.end(); it++)
 	{
-		if ( !checkTable(it->second.sName))
+		if (!checkTable(it->second.sName))
 		{
 			if (!createTable(it->second))
 				return false;
@@ -76,10 +76,62 @@ bool MysqlManager::checkDatabase()
 {
 	if (NULL == _mysqlToolPtr)
 		return false;
-	QueryResult reslut = _mysqlToolPtr->query("show databases;");
+	QueryResultPtr reslut = _mysqlToolPtr->query("show databases;");
 	if (NULL = reslut)
 		return false;
 
+	Field* row = reslut->Fetch();
+	std::string	 dbName = _mysqlToolPtr->getDBName();
+
+	while (1)
+	{
+		if (dbName == row[0].getName())
+		{
+			reslut->end();
+			return true;
+		}
+		
+		if (reslut->nextRow() == false)
+			break;
+	}
+	reslut->end();
+	std::cout << "dataBase not found" << std::endl;
+	return false;
+}
+
+bool MysqlManager::checkTable(const std::string tableName)
+{
+	if (_mysqlToolPtr == NULL) return false;
+	std::stringstream << "desc " << tableName << ";";
+	QueryResultPtr result = _mysqlToolPtr->query(sql);
+	
+	//如果表不存在
+	if (NULL == result)
+	{
+		if (!createTable(_mTables[tableName])) return false; // 创建失败
+		return true;
+	}
+	md
+
+	// 检查表是否正确
+	Field* fields = result->Fetch();
+	while (1)
+	{
+		
+	}
+	return false;
+}
+
+bool MysqlManager::createDataBase()
+{
+	if (_mysqlToolPtr == NULL)
+		return false;
+	std::stringstream sql;
+	sql << "create database " << _mysqlToolPtr->getDBName() << ";";
+	MyLong affectRow = 0;
+	uint32_t nErrno = 0;
+	if (_mysqlToolPtr->execute(sql, affectRow, nErrno));
+	if (affectRow == 1)	return  true;
 	return false;
 }
 

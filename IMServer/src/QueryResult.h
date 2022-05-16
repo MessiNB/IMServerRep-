@@ -23,6 +23,11 @@ public:
 
 	bool nextRow(); // 获取一行数据
 
+	// 返回 field数组的首地址(当前行的首地址）
+	Field* Fetch() {
+		return m_CurrentRow.data();
+	}
+
 	// 使用下标访问
 	const Field& operator[] (int index) const
 	{
@@ -66,8 +71,6 @@ private:
 	MYSQL_RES* _res = NULL; // 结果集
 	MyLong _rowCount = 0; // 行数
 	uint32_t _columnCount = 0; // 列数
-
-
 };
 
 typedef std::shared_ptr <QueryResult> QueryResultPtr;
