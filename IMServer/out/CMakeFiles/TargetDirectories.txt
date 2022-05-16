@@ -1,0 +1,3 @@
+/home/tan/桌面/IMServer/IMServer/out/CMakeFiles/rebuild_cache.dir
+/home/tan/桌面/IMServer/IMServer/out/CMakeFiles/edit_cache.dir
+/home/tan/桌面/IMServer/IMServer/out/CMakeFiles/IMServer.dir

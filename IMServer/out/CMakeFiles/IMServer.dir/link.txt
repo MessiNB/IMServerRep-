@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++17 -g -Wall -O0  -Wno-unused-variable -pthread   CMakeFiles/IMServer.dir/IMServer.cpp.o  -o IMServer   -L/home/tan/桌面/IMServer/IMServer  -Wl,-rpath,/home/tan/桌面/IMServer/IMServer -lmysqlclient 
