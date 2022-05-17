@@ -83,16 +83,15 @@ bool MysqlManager::checkDatabase()
 	Field* row = reslut->Fetch();
 	std::string	 dbName = _mysqlToolPtr->getDBName();
 
-	while (1)
+	if (NULL != row	)
 	{
-		if (dbName == row[0].getName())
+		if (reslut->nextRow() == false)
+			break;
+		if (dbName == row[0].getValue())
 		{
 			reslut->end();
 			return true;
 		}
-		
-		if (reslut->nextRow() == false)
-			break;
 	}
 	reslut->end();
 	std::cout << "dataBase not found" << std::endl;
@@ -111,13 +110,25 @@ bool MysqlManager::checkTable(const std::string tableName)
 		if (!createTable(_mTables[tableName])) return false; // 创建失败
 		return true;
 	}
-	md
-
-	// 检查表是否正确
+	// 检查表是否正确, 字段名，字段类型
 	Field* fields = result->Fetch();
-	while (1)
+	while(NULL != fields)
 	{
-		
+		if (result->nextRow() == false)
+			break;
+		std::string name = fields[0].getValue();  //字段名
+		std::string type = fields[1].getValue();  //字段类型
+		auto it = _mTables[tableName].mFields.find(name);
+		if (it == _mTables[tableName].mFields.end())
+		{
+			//没有找到对应的字段
+			// TODO: 最好追加
+		}
+		if (it->second.sType != type)
+		{
+			// 字段类型不同，修改字段类型
+			return false;
+		}
 	}
 	return false;
 }
