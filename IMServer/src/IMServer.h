@@ -26,7 +26,7 @@ public:
 protected:
 	void OnConnection(const muduo::net::TcpConnectionPtr& conn);
 	
-	void Onclose(const muduo::net::TcpConnectionPtr& conn);
+	void OnClose(const muduo::net::TcpConnectionPtr& conn);
 
 private:
 	std::shared_ptr<muduo::net::TcpServer> _server;// TcpServerπ≤œÌ÷∏·ò

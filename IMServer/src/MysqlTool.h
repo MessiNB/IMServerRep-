@@ -9,24 +9,24 @@
 #include "muduo/base/Logging.h"
 #include "QueryResult.h"
 
-// ·â×°Êý¾Ý¿âAPI  ¹©ÒµÎñ²ãÊ¹ÓÃ
+// ï¿½ï¿½×°ï¿½ï¿½ï¿½Ý¿ï¿½API  ï¿½ï¿½Òµï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 class MysqlTool
 {
 public:
 	MysqlTool();
 	~MysqlTool();
 
-	// Á¬½ÓÊÂ¼þ
-	bool connect(const std::string& host, const std::string& user, const std::string& pwd, const std::string& dbName,const uint32_t = 3306);
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+	bool connect(const std::string& host, const std::string& user, const std::string& pwd, const std::string& dbName,uint32_t = 3306);
 
-	// ²éÑ¯·µ»Ø Öµ·µ»ØÖ¸Õë£¬±ÜÏÕ²éÑ¯½á¹û¹ý´óµÄ¿ªÏú
+	// ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ Öµï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬ï¿½ï¿½ï¿½Õ²ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
 	QueryResultPtr query(const std::string& sql);
 
-	// Ö´ÐÐÓï¾ä
+	// Ö´ï¿½ï¿½ï¿½ï¿½ï¿½
 	bool execute(const std::string& sql);
 	bool execute(const std::string& sql, MyLong& nAffectedRowCount, uint32_t& nErrno);
 
-	// ¹Ø±ÕÁ¬½Ó
+	// ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½
 	void closeDB()
 	{
 		if (_mysql != NULL)
@@ -36,10 +36,10 @@ public:
 		}
 	}
 
-	string getDBName(const std::string& dbName) const { return _dbname; }
+	std::string getDBName() const { return _dbname; }
 
 private:
-	MYSQL* _mysql = NULL;  // Êý¾Ý¿â¾ä±ú
+	MYSQL* _mysql = NULL;  // ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½
 	std::string _host;
 	std::string _user;
 	std::string _pwd;

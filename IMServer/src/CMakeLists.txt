@@ -17,7 +17,7 @@ muduo/net/EventLoopThread.cc muduo/net/EventLoopThreadPool.cc muduo/net/Timer.cc
 
 set(server_srcs IMServer.cpp main.cpp ClientSession.cpp)
 
-set(mysql_srcs MysqlTool.cpp QueryResult.cpp Field.cpp MysqlManager.cpp)
+set(mysql_srcs MysqlTool.cpp QueryResult.cpp Field.cpp MysqlBusiness.cpp)
 
 # 链接库文件目录(针对64位)
 link_directories(

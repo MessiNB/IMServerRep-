@@ -2,43 +2,48 @@
 #include <map>
 using std::string;
 
-// Êý¾Ý¿âÒµÎñ²ã£¨ÉÏ²ã¶ÔÍâ½Ó¿Ú£©
+// ï¿½ï¿½ï¿½Ý¿ï¿½Òµï¿½ï¿½ã£¨ï¿½Ï²ï¿½ï¿½ï¿½ï¿½Ó¿Ú£ï¿½
 class MysqlManager
 {
 public:
 	struct sFieldInfo
 	{
-		string sName; // ×Ö¶ÎÃû
-		string sType;	// ×Ö¶ÎÀàÐÍ
-		string sDesc;	// ×Ö¶Î×¢ÊÍÃèÊö
+		string sName; // ï¿½Ö¶ï¿½ï¿½ï¿½
+		string sType; // ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
+		string sDesc; // ï¿½Ö¶ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	};
 
 	struct sTableInfo
 	{
-		string sName; // ±íÃû
-		string sKey; // ±íÖÐÖ÷¼ü
-		std::map<string, sFieldInfo> mFields;  // ×Ö¶ÎÃûÓ³Éä±í
+		string sName;						  // ï¿½ï¿½ï¿½ï¿½
+		string sKey;						  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		std::map<string, sFieldInfo> mFields; // ï¿½Ö¶ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½
 	};
-
+public:
 	MysqlManager();
-	~MysqlManager()=default;
+	~MysqlManager() = default;
 
-	// ³õÊ¼»¯Á´½ÓÊý¾Ý¿â
-	bool init(const string& host, const string& user, const string& pwd, const string& dbname,
-		const unsigned int	 port = 3306);
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
+	bool init(const string &host, const string &user, const string &pwd, const string &dbname, const uint32_t port = 3306);
 
-	QueryResultPtr Query(const string& sql);
-
-private:
-	bool checkDatabase();					// ¼ì²éÊý¾Ý¿âÊÇ·ñ´æÔÚ
-	bool checkTable(const std::string tableName);		// ¼ì²é±íÊÇ·ñ´æÔÚ
-	bool createDataBase();										//  ´´½¨Êý¾Ý¿â
-	bool createTable(const sTableInfo& info);			// ´´½¨±í
-	//bool updateTable(const sTableInfo& info);		// ¸üÐÂ±í
+	QueryResultPtr Query(const string &sql)
+	{
+		if (_mysqlToolPtr == NULL)
+			return QueryResultPtr();
+		return _mysqlToolPtr->query(sql);
+	}
 
 private:
-	std::map <string, sTableInfo> _mTables;   // Í¨¹ý±íÃûÓ³Éä
-	std::shared_ptr<MysqlTool> _mysqlToolPtr; // sql ¹¤¾ßÀà¹²ÏíÖ¸Õë
+	bool checkDatabase();						  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
+	bool checkTable(const std::string tableName); // ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
+	bool createDataBase();						  //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
+	bool createTable(const sTableInfo &info);	  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+												  // bool updateTable(const sTableInfo& info);		// ï¿½ï¿½ï¿½Â±ï¿½
+
+private:
+	std::map<string, sTableInfo> _mTables;	  // Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½
+	std::shared_ptr<MysqlTool> _mysqlToolPtr; // sql ï¿½ï¿½ï¿½ï¿½ï¿½à¹²ï¿½ï¿½Ö¸ï¿½ï¿½
 };
 
-typedef std::pair<string, MysqlManager::sFieldInfo> PairTAble;
+typedef std::pair<string, MysqlManager::sTableInfo> PairTAble;
+typedef std::pair<string, MysqlManager::sFieldInfo> PairFiled;

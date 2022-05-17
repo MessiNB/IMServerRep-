@@ -64,6 +64,19 @@ bin/CMakeFiles/IMServer.dir/IMServer.cpp.o
  /home/tan/桌面/IM/IMServer/src/muduo/net/EventLoopThread.h
  /home/tan/桌面/IM/IMServer/src/muduo/net/EventLoopThreadPool.h
  /home/tan/桌面/IM/IMServer/src/muduo/net/TcpServer.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o
+ ../../../src/muduo/base/LogStream.h
+ ../../../src/muduo/base/StringPiece.h
+ ../../../src/muduo/base/Timestamp.h
+ ../../../src/muduo/base/Types.h
+ ../../../src/muduo/base/copyable.h
+ ../../../src/muduo/base/noncopyable.h
+ /home/tan/桌面/IM/IMServer/src/Field.h
+ /home/tan/桌面/IM/IMServer/src/MysqlBusiness.cpp
+ /home/tan/桌面/IM/IMServer/src/MysqlBusiness.h
+ /home/tan/桌面/IM/IMServer/src/MysqlTool.h
+ /home/tan/桌面/IM/IMServer/src/QueryResult.h
+ /home/tan/桌面/IM/IMServer/src/muduo/base/Logging.h
 bin/CMakeFiles/IMServer.dir/MysqlTool.cpp.o
  ../../../src/muduo/base/LogStream.h
  ../../../src/muduo/base/StringPiece.h
@@ -107,7 +120,11 @@ bin/CMakeFiles/IMServer.dir/main.cpp.o
  ../../../src/muduo/net/TcpConnection.h
  ../../../src/muduo/net/TimerId.h
  /home/tan/桌面/IM/IMServer/src/ClientSession.h
+ /home/tan/桌面/IM/IMServer/src/Field.h
  /home/tan/桌面/IM/IMServer/src/IMServer.h
+ /home/tan/桌面/IM/IMServer/src/MysqlBusiness.h
+ /home/tan/桌面/IM/IMServer/src/MysqlTool.h
+ /home/tan/桌面/IM/IMServer/src/QueryResult.h
  /home/tan/桌面/IM/IMServer/src/main.cpp
  /home/tan/桌面/IM/IMServer/src/main.h
  /home/tan/桌面/IM/IMServer/src/muduo/base/Logging.h

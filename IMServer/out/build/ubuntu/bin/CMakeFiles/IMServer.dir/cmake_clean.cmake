@@ -4,6 +4,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/IMServer.dir/ClientSession.cpp.o"
   "CMakeFiles/IMServer.dir/Field.cpp.o"
   "CMakeFiles/IMServer.dir/IMServer.cpp.o"
+  "CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o"
   "CMakeFiles/IMServer.dir/MysqlTool.cpp.o"
   "CMakeFiles/IMServer.dir/QueryResult.cpp.o"
   "CMakeFiles/IMServer.dir/main.cpp.o"

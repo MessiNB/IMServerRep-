@@ -9,7 +9,7 @@
 #include <signal.h>
 #include <fcntl.h>
 
-using std::cout, std::endl, std::invalid_argument;
+using namespace std;
 
 
 //void test(EventLoop& loop) {
@@ -120,7 +120,7 @@ int main(int argc, char* argv[], char* env[])
 
 	if (Singleton<IMServer>::instance().init("0.0.0.0", 9527, &loop) == false)
 	{
-		cout << "server init failed" << endl;
+		cout << "server init failed" << std::endl;
 		return -1;
 	}
 	

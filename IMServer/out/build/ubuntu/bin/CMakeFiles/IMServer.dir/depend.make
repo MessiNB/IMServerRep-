@@ -64,6 +64,19 @@ bin/CMakeFiles/IMServer.dir/IMServer.cpp.o: ../../../src/muduo/net/EventLoopThre
 bin/CMakeFiles/IMServer.dir/IMServer.cpp.o: ../../../src/muduo/net/EventLoopThreadPool.h
 bin/CMakeFiles/IMServer.dir/IMServer.cpp.o: ../../../src/muduo/net/TcpServer.h
 
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/LogStream.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/StringPiece.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/Timestamp.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/Types.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/copyable.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/noncopyable.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/Field.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/MysqlBusiness.cpp
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/MysqlBusiness.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/MysqlTool.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/QueryResult.h
+bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o: ../../../src/muduo/base/Logging.h
+
 bin/CMakeFiles/IMServer.dir/MysqlTool.cpp.o: ../../../src/muduo/base/LogStream.h
 bin/CMakeFiles/IMServer.dir/MysqlTool.cpp.o: ../../../src/muduo/base/StringPiece.h
 bin/CMakeFiles/IMServer.dir/MysqlTool.cpp.o: ../../../src/muduo/base/Timestamp.h
@@ -106,7 +119,11 @@ bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/muduo/net/InetAddress.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/muduo/net/TcpConnection.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/muduo/net/TimerId.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/ClientSession.h
+bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/Field.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/IMServer.h
+bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/MysqlBusiness.h
+bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/MysqlTool.h
+bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/QueryResult.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/main.cpp
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/main.h
 bin/CMakeFiles/IMServer.dir/main.cpp.o: ../../../src/muduo/base/Logging.h

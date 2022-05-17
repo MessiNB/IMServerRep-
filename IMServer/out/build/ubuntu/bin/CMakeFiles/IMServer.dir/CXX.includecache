@@ -68,12 +68,22 @@ iostream
 muduo/base/Logging.h
 /home/tan/桌面/IM/IMServer/src/muduo/base/Logging.h
 
-/home/tan/桌面/IM/IMServer/src/MysqlTool.cpp
+/home/tan/桌面/IM/IMServer/src/MysqlBusiness.cpp
+MysqlBusiness.h
+/home/tan/桌面/IM/IMServer/src/MysqlBusiness.h
+sstream
+-
+
+/home/tan/桌面/IM/IMServer/src/MysqlBusiness.h
 MysqlTool.h
 /home/tan/桌面/IM/IMServer/src/MysqlTool.h
+map
+-
 
 /home/tan/桌面/IM/IMServer/src/MysqlTool.h
 mysql/mysql.h
+-
+mysql/errmsg.h
 -
 unistd.h
 -

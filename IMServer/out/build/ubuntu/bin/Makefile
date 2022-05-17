@@ -206,6 +206,33 @@ IMServer.cpp.s:
 	cd /home/tan/桌面/IM/IMServer/out/build/ubuntu && $(MAKE) -f bin/CMakeFiles/IMServer.dir/build.make bin/CMakeFiles/IMServer.dir/IMServer.cpp.s
 .PHONY : IMServer.cpp.s
 
+MysqlBusiness.o: MysqlBusiness.cpp.o
+
+.PHONY : MysqlBusiness.o
+
+# target to build an object file
+MysqlBusiness.cpp.o:
+	cd /home/tan/桌面/IM/IMServer/out/build/ubuntu && $(MAKE) -f bin/CMakeFiles/IMServer.dir/build.make bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.o
+.PHONY : MysqlBusiness.cpp.o
+
+MysqlBusiness.i: MysqlBusiness.cpp.i
+
+.PHONY : MysqlBusiness.i
+
+# target to preprocess a source file
+MysqlBusiness.cpp.i:
+	cd /home/tan/桌面/IM/IMServer/out/build/ubuntu && $(MAKE) -f bin/CMakeFiles/IMServer.dir/build.make bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.i
+.PHONY : MysqlBusiness.cpp.i
+
+MysqlBusiness.s: MysqlBusiness.cpp.s
+
+.PHONY : MysqlBusiness.s
+
+# target to generate assembly for a file
+MysqlBusiness.cpp.s:
+	cd /home/tan/桌面/IM/IMServer/out/build/ubuntu && $(MAKE) -f bin/CMakeFiles/IMServer.dir/build.make bin/CMakeFiles/IMServer.dir/MysqlBusiness.cpp.s
+.PHONY : MysqlBusiness.cpp.s
+
 MysqlTool.o: MysqlTool.cpp.o
 
 .PHONY : MysqlTool.o
@@ -1169,6 +1196,9 @@ help:
 	@echo "... IMServer.o"
 	@echo "... IMServer.i"
 	@echo "... IMServer.s"
+	@echo "... MysqlBusiness.o"
+	@echo "... MysqlBusiness.i"
+	@echo "... MysqlBusiness.s"
 	@echo "... MysqlTool.o"
 	@echo "... MysqlTool.i"
 	@echo "... MysqlTool.s"

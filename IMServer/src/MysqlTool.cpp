@@ -10,27 +10,28 @@ MysqlTool :: ~MysqlTool()
 	closeDB();
 }
 
-bool MysqlTool::connect(const std::string& host, const std::string& user, const std::string& pwd, const std::string& dbName,const uint32_t port =3306)
+bool MysqlTool::connect(const std::string& host, const std::string& user, 
+const std::string& pwd, const std::string& dbName, const uint32_t port)
 {
 	closeDB();
-	// ³õÊ¼»¯
+	// ï¿½ï¿½Ê¼ï¿½ï¿½
 	_mysql = mysql_init(_mysql);
 
-	//Á¬½Ó
+	//ï¿½ï¿½ï¿½ï¿½
 	_mysql = mysql_real_connect(_mysql, host.c_str(), user.c_str(), pwd.c_str(), dbName.c_str(), port, NULL, 0);
 
 	std::cout << "[host: " << host << "], [user: " << user << "] , [pwd: " << pwd << "] , [dbname: " << dbName << "]" << std::endl;
 
 	if (_mysql != NULL)
 	{ 
-		//Á´½Ó³É¹¦£¬ÉèÖÃ´ËÊ±µÄ Á´½ÓÊý¾Ý
+		//ï¿½ï¿½ï¿½Ó³É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		_host = host;
 		_user = user;
 		_pwd = pwd;
 		_dbname = dbName;
 		_port = port;
 		
-		mysql_query(_mysql, "set names utf8");  //  ÉèÖÃ±àÂë¼¯£¨Ö§³ÖÖÐÎÄ)
+		mysql_query(_mysql, "set names utf8");  //  ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ë¼¯ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 		std::cout << "mysql connect success !" << std::endl;
 		return true;
 	}
@@ -43,42 +44,42 @@ QueryResultPtr MysqlTool::query(const std::string& sql)
 	if (NULL == _mysql)
 	{
 		if (connect(_host, _user,_pwd ,_dbname) == false)
-			return QueryResultPtr();  // Á¬½Ó²»ÉÏÊý¾Ý¿â ·µ»Ø¿ÕµÄ shard_ptr
+			return QueryResultPtr();  // ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½Ø¿Õµï¿½ shard_ptr
 	}
-	int ret = mysql_real_query(_mysql, sql.c_str(), sql.size()); //²éÑ¯³É¹¦·µ»Ø0
+	int ret = mysql_real_query(_mysql, sql.c_str(), sql.size()); //ï¿½ï¿½Ñ¯ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½0
 	if (ret != 0) {
-		// ²éÑ¯Ê§°Ü
-		uint32_t nErrno = mysql_errno(_mysql); //»ñÈ¡´íÎó code
+		// ï¿½ï¿½Ñ¯Ê§ï¿½ï¿½
+		uint32_t nErrno = mysql_errno(_mysql); //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ code
 		std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 
-		// Èç¹û ÊÇ ·þÎñÆ÷µÄÔ­Òò£¬±ÈÈçÍøÂç¶Ï¿ª£¬³¢ÊÔÖØÀ´
+		// ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ò£¬±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (CR_SERVER_GONE_ERROR == nErrno)
 		{
 			if (connect(_host, _user,_pwd ,_dbname) == false)
-				return QueryResultPtr();  // Á¬½Ó²»ÉÏÊý¾Ý¿â ·µ»Ø¿ÕµÄ shard_ptr
+				return QueryResultPtr();  // ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½Ø¿Õµï¿½ shard_ptr
 
 			ret = mysql_real_query(_mysql, sql.c_str(), sql.size());
 			if (0 != ret)
 			{
-				nErrno = mysql_errno(_mysql); //»ñÈ¡´íÎó code
+				nErrno = mysql_errno(_mysql); //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ code
 				std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 				return QueryResultPtr();
 			}
 		}
 		else
 		{
-			// ²»ÊÇ·þÎñÆ÷µ¼ÖÂµÄ ²éÑ¯Ê§°Ü
+			// ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ ï¿½ï¿½Ñ¯Ê§ï¿½ï¿½
 			return QueryResultPtr();
 		}
 	}
-	MYSQL_RES* res = mysql_store_result(_mysql);				// »ñÈ¡²éÑ¯·µ»Ø½á¹û¼¯
-	MyLong  rowCount = mysql_affected_rows(_mysql);		// »ñÈ¡ ÐÐÊý
-	uint32_t columnCount = mysql_field_count(_mysql);		// »ñÈ¡ ÁÐÊý
+	MYSQL_RES* res = mysql_store_result(_mysql);				// ï¿½ï¿½È¡ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ï¿½
+	MyLong  rowCount = mysql_affected_rows(_mysql);		// ï¿½ï¿½È¡ ï¿½ï¿½ï¿½ï¿½
+	uint32_t columnCount = mysql_field_count(_mysql);		// ï¿½ï¿½È¡ ï¿½ï¿½ï¿½ï¿½
 
 	return QueryResultPtr(new QueryResult(res, rowCount, columnCount));
 }
 
-// Ö´ÐÐÓï¾ä
+// Ö´ï¿½ï¿½ï¿½ï¿½ï¿½
 bool MysqlTool::execute(const std::string& sql)
 {
 	MyLong nAffectedCount;
@@ -90,26 +91,26 @@ bool MysqlTool::execute(const std::string& sql, MyLong& nAffectedRowCount, uint3
 {
 	if (NULL == _mysql)
 	{
-		if (connect(_host, _user, _pwd,_dbnamse) == false)
-			return false;  // Á¬½Ó²»ÉÏÊý¾Ý¿â ·µ»Ø¿ÕµÄ shard_ptr
+		if (connect(_host, _user, _pwd,_dbname) == false)
+			return false;  // ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½Ø¿Õµï¿½ shard_ptr
 	}
 
-	int ret = mysql_query(_mysql, sql.c_str()); //²éÑ¯³É¹¦·µ»Ø0
+	int ret = mysql_query(_mysql, sql.c_str()); //ï¿½ï¿½Ñ¯ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½0
 	if (ret != 0) {
-		// ²éÑ¯Ê§°Ü
-		  nErrno = mysql_errno(_mysql); //»ñÈ¡´íÎó code
+		// ï¿½ï¿½Ñ¯Ê§ï¿½ï¿½
+		  nErrno = mysql_errno(_mysql); //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ code
 		std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 
-		// Èç¹û ÊÇ ·þÎñÆ÷µÄÔ­Òò£¬±ÈÈçÍøÂç¶Ï¿ª£¬³¢ÊÔÖØÀ´
+		// ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ò£¬±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (CR_SERVER_GONE_ERROR == nErrno)
 		{
 			if (connect(_host, _user, _pwd,_dbname) == false)
-				return false;  // Á¬½Ó²»ÉÏÊý¾Ý¿â ·µ»Ø¿ÕµÄ shard_ptr
+				return false;  // ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½Ø¿Õµï¿½ shard_ptr
 
 			ret = mysql_query(_mysql, sql.c_str());
 			if (0 != ret)
 			{
-				nErrno = mysql_errno(_mysql); //»ñÈ¡´íÎó code
+				nErrno = mysql_errno(_mysql); //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ code
 				std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 				return false;
 			}

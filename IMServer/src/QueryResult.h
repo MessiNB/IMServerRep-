@@ -25,7 +25,7 @@ public:
 
 	// 返回 field数组的首地址(当前行的首地址）
 	Field* Fetch() {
-		return m_CurrentRow.data();
+		return _currentRow.data();
 	}
 
 	// 使用下标访问

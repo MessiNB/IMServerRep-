@@ -1,52 +1,52 @@
-#include "IMServer.h"
+ï»¿#include "IMServer.h"
 
 
-// ³õÊ¼»¯·ş„ÕÆ÷
+// åˆå§‹åŒ–æœå‹™å™¨
 bool IMServer::init(const std::string& ip, short port, EventLoop* loop) {
-	// °ó¶¨µØÖ·£¬ÉèÖÃ¶Ë¿Ú·şÓÃ
+	// ç»‘å®šåœ°å€ï¼Œè®¾ç½®ç«¯å£æœç”¨
 	InetAddress addr(ip, port);
 	_server.reset(new TcpServer(loop, addr, "IMServer", TcpServer::kNoReusePort));
 	
-	// ×¢²á Á¬½ÓÊÂ¼ş»Øµ÷º¯Êı
+	// æ³¨å†Œ è¿æ¥äº‹ä»¶å›è°ƒå‡½æ•°
 	_server->setConnectionCallback(std::bind(&IMServer::OnConnection, this, std::placeholders::_1));
 
-	// ¿ªÊ¼ÔËĞĞ
+	// å¼€å§‹è¿è¡Œ
 	_server->start();
 
 	return true;
 	
 }
 
-// ´¦ÀíÁ¬½ÓÊÂ¼ş
+// å¤„ç†è¿æ¥äº‹ä»¶
 void IMServer::OnConnection(const muduo::net::TcpConnectionPtr& conn) {
 
 	if (conn->connected ( ) )
 	{
-		// ´´½¨ session ²¢Ìí¼ÓÖÁ Ó³Éä
+		// åˆ›å»º session å¹¶æ·»åŠ è‡³ æ˜ å°„
 		std::lock_guard<std::mutex> guard(_sessionLock);
 		ClientSessionPtr client(new ClientSession(conn));
 		_mapClientSession.insert(ConnPair((std::string)*client, client));
 	}
 	else
 	{
-		// µ±ÎÒÃÇÀ´³öÀ´Á¬½ÓÊÂ¼şÊ±£¬ ¿ÉÄÜÁ¬½ÓÒÑ¾­¶Ï¿ª
-		Onclose(conn);
+		// å½“æˆ‘ä»¬æ¥å‡ºæ¥è¿æ¥äº‹ä»¶æ—¶ï¼Œ å¯èƒ½è¿æ¥å·²ç»æ–­å¼€
+		OnClose(conn);
 	}
 	
 }
 
-// ´¦ÀíÁ¬½ÓÖĞ¶Ï
-void IMServer::Onclose(const muduo::net::TcpConnectionPtr& conn) {
-	//TODO: ÕÒµ½Õâ¸öÁ¬½Ó£¬½øĞĞ¹Ø±Õ
+// å¤„ç†è¿æ¥ä¸­æ–­
+void IMServer::OnClose(const muduo::net::TcpConnectionPtr& conn) {
+	//TODO: æ‰¾åˆ°è¿™ä¸ªè¿æ¥ï¼Œè¿›è¡Œå…³é—­
 	auto iter = _mapClientSession.find(conn->name());
 	if (iter != _mapClientSession.end())
 	{
-		//¹Ø±ÕÁ¬½Ó
+		//å…³é—­è¿æ¥
 		_mapClientSession.erase(iter);
 	}
 	else
 	{
-		// ÕÒ²»µ½¸ÃÁ¬½Ó
+		// æ‰¾ä¸åˆ°è¯¥è¿æ¥
 		std::cout << "can't find conn.name:  " << conn->name() << std::endl;
 		
 	}
