@@ -46,7 +46,7 @@ MysqlManager::MysqlManager()
 	m_mapTable.insert(TablePair(info.sName, info));
 }
 
-bool MysqlManager::init(const string& host, const string& user, const string& pwd, const string& dbname, const unsigned int port)
+bool MysqlManager::init(const string& host, const string& user, const string& pwd, const string& dbname, const unsigned int port = 3306)
 {
 	_mysqlToolPtr.reset(new MysqlTool);
 	bool res = _mysqlToolPtr->connect(host, user, pwd, dbname, port);
@@ -83,7 +83,7 @@ bool MysqlManager::checkDatabase()
 	Field* row = reslut->Fetch();
 	std::string	 dbName = _mysqlToolPtr->getDBName();
 
-	if (NULL != row	)
+	if (NULL != row)
 	{
 		if (reslut->nextRow() == false)
 			break;
@@ -101,36 +101,63 @@ bool MysqlManager::checkDatabase()
 bool MysqlManager::checkTable(const std::string tableName)
 {
 	if (_mysqlToolPtr == NULL) return false;
-	std::stringstream << "desc " << tableName << ";";
+	std::stringstream sql;
+	sql << "desc " << tableName << ";";
 	QueryResultPtr result = _mysqlToolPtr->query(sql);
-	
+
 	//如果表不存在
 	if (NULL == result)
 	{
-		if (!createTable(_mTables[tableName])) return false; // 创建失败
-		return true;
+		return false;
 	}
+
+	std::map<std::string, sFieldInfo> map_reset(_mTables[tableName]);  // 要追加的
+	std::map<std::string, sFieldInfo> map_change;									  // 要更新的
+
 	// 检查表是否正确, 字段名，字段类型
 	Field* fields = result->Fetch();
-	while(NULL != fields)
+	while (NULL != fields)
 	{
 		if (result->nextRow() == false)
 			break;
-		std::string name = fields[0].getValue();  //字段名
-		std::string type = fields[1].getValue();  //字段类型
+		std::string name = fields[0].getValue();  //数据库中字段名
+		std::string type = fields[1].getValue();  //数据库中字段类型
 		auto it = _mTables[tableName].mFields.find(name);
 		if (it == _mTables[tableName].mFields.end())
 		{
-			//没有找到对应的字段
-			// TODO: 最好追加
+			// TODO: 代中没有该字段
+			continue;
 		}
+		map_reset.erase(name);  // 数据库中和代码中都有，从 要追加的中删除
 		if (it->second.sType != type)
 		{
 			// 字段类型不同，修改字段类型
-			return false;
+			map_change.insert(PairTAble(name, it->second));
 		}
 	}
-	return false;
+	result->end();
+
+	if (map_reset.size() > 0)
+	{
+		auto it = map_reset.begin();
+		std::stringstream reset_sql;
+		for (; it < map_reset.end(); it++)
+		{
+			reset_sql << "alter table " << tableName << " add column " << it->second.sDesc << " " << it->second.sType << ";";
+			if (!_mysqlToolPtr->execute(reset_sql))
+				return false;
+		}
+	}
+
+	if (map_change.size() > 0)
+	{
+		auto it = map_change.begin();
+		std::stringstream change_sql;
+		change_sql << "alter table " << tableName << " modify column " << it->second.sDesc << " " << it->second.sType << ";";
+		if (!_mysqlToolPtr->execute(change_sql))
+			return false;
+	}
+	return true;
 }
 
 bool MysqlManager::createDataBase()
@@ -146,8 +173,28 @@ bool MysqlManager::createDataBase()
 	return false;
 }
 
-bool MysqlManager::init(const string& host, const string& user, const string& pwd, const string& dbname, short port)
+bool MysqlManager::createTable(const sTableInfo& info)
 {
+	if (NULL == _mysqlToolPtr)		return false;
+	if (0 == info.mFields.size()) return false;
 
-	return false;
+	std::stringstream sql;
+	sql << "create table if not exists " << info.sName << "(";
+	const std::map<std::string, sFieldInfo >::iterator it = info.mFields.begin();
+
+	for ( ; it < info.mFields.end() ; it++ )
+	{
+		if (it != info.mFields.begin())
+			sql << ",";
+		sFieldInfo field = it->second;
+		sql << field.sName << " " << field.sType;
+	}
+
+	if (info.sKey.size() > 0)
+	{
+		sql << "," << info.sKey;
+	}
+	sql << ") default charset=utf-8,ENGINE=InnoDB;";
+	return _mysqlToolPtr->execute(sql);
 }
+

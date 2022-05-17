@@ -4,9 +4,11 @@
 #include "main.h"
 #include "IMServer.h"
 #include "muduo/base/Singleton.h"
+#include "MysqlBusiness.h"
 #include <exception>
 #include <signal.h>
 #include <fcntl.h>
+
 using std::cout, std::endl, std::invalid_argument;
 
 
@@ -109,6 +111,12 @@ int main(int argc, char* argv[], char* env[])
 	// 开启服务器逻辑
 	// 创建一个事件循环对象（必须在线程中开启循环）
 	muduo::net::EventLoop loop;
+
+	if (Singleton<MysqlManager>::instance().init("127.0.0.1","root","123456","IMServer",3306) == false)
+	{
+		cout << "database init false ";
+		return -2;
+	}
 
 	if (Singleton<IMServer>::instance().init("0.0.0.0", 9527, &loop) == false)
 	{

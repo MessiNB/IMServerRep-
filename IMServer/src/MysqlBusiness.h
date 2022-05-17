@@ -34,7 +34,7 @@ private:
 	bool checkTable(const std::string tableName);		// 检查表是否存在
 	bool createDataBase();										//  创建数据库
 	bool createTable(const sTableInfo& info);			// 创建表
-	bool updateTable(const sTableInfo& info);		// 更新表
+	//bool updateTable(const sTableInfo& info);		// 更新表
 
 private:
 	std::map <string, sTableInfo> _mTables;   // 通过表名映射
