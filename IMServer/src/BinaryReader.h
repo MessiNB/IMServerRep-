@@ -33,16 +33,18 @@ public:
 		_index += sizeof(T);
 	}
 
-	template<std::string>
-	bool readData(std::string& data)
-	{
-		// TODO：处理结构体数据
-		return true;
-	}
-
 	~BinaryReader() =default ;
 
 private:
 	string _msg;
 	int _index = 0;
 };
+
+template<>
+bool BinaryReader::readData(std::string& data)
+{
+	memcpy((char*)data, _msg.c_str() + _index, data.size());
+	_index += data.size();
+	// TODO：处理结构体数据
+	return true;
+}

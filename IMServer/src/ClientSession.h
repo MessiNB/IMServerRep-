@@ -19,19 +19,19 @@ enum {
 	//用户消息
 	MSG_TYPE_HEARTBEAT = 1000,				//心跳
 	MSG_TYPE_REGISTER ,							//注册
-	MSG_TYPE_LOGIN,									//
-	MSG_TYPE_FRIENDLIST,
-	MSG_TYPE_FRIENDUSER,
-	MSG_TYPE_OPERATEFRIEND,
-	MSG_TYPE_USERSTATUS,
-	MSG_TYPE_UPDATEUSERINFO,
-	MSG_TYPE_MODIFYPWD,
-	MSG_TYPE_CREATEGROUP,
-	MSG_TYPE_GETGROUPMEMBERS,
+	MSG_TYPE_LOGIN,									// 连接
+	MSG_TYPE_FRIENDLIST,							// 好友列表
+	MSG_TYPE_FINDUSER,						// 
+	MSG_TYPE_OPERATEFRIEND,					// 操作好友
+	MSG_TYPE_USERSTATUS,						// 用户状态
+	MSG_TYPE_UPDATEUSERINFO,				// 用户信息更改
+	MSG_TYPE_MODIFYPWD,						// 修改密码
+	MSG_TYPE_CREATEGROUP,					// 创建 群
+	MSG_TYPE_GETGROUPMEMBERS,			// 获得群成员信息
 	
 	// 聊天消息
-	MSG_TYPE_CHAT = 1100,
-	MSG_TYPE_GROUPCHAT ,
+	MSG_TYPE_CHAT = 1100,						// 私聊
+	MSG_TYPE_GROUPCHAT ,						// 群聊
 };
 
 //客户端会话，通过会话id 找到对应连接
@@ -60,6 +60,9 @@ public:
 
 	// 处理消息
 	bool process(const muduo::net::TcpConnectionPtr& conn, string msg);
+
+	// 心跳处理
+	void onHeartbeatResponse(const muduo::net::TcpConnectionPtr& conn, const string &data);
 
 private:
 	//uuid_t _sessionId; //唯一 会话id（实际为 char[16]， 在Linux中）

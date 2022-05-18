@@ -3,8 +3,11 @@
     "",
     "\\IMServer",
     "\\IMServer\\out",
-    "\\IMServer\\src"
+    "\\IMServer\\src",
+    "\\IMServer\\src\\muduo\\base",
+    "\\IMServer\\src\\muduo\\net\\inspect",
+    "\\IMServer\\src\\muduo\\net\\protobuf"
   ],
-  "SelectedNode": "\\IMServer\\src\\BinaryReader.h",
+  "SelectedNode": "\\IMServer\\src\\muduo",
   "PreviewInSolutionExplorer": false
 }

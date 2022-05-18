@@ -47,21 +47,56 @@ bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg
 {
 	BinaryReader reader(msg);
 	int cmd = -1;
-	if (!reader.readData<int>(cmd))
-		return false;
-	if (!reader.readData<int>(_seq))
+	if (!reader.readData<int>(cmd))  // 指令
+		return false;	
+	if (!reader.readData<int>(_seq))	 // 序列号
 		return false;
 	size_t dataLen = 0;
-	if (!reader.readData<size_t>(dataLen))
+	if (!reader.readData<size_t>(dataLen)) // 数据段大小
 		return false;
+
+	string data;
+	data.resize(dataLen);
+	reader.readData(data);
 
 	switch (cmd)
 	{
-	case 1000:  // 心跳
-
+	case MSG_TYPE_HEARTBEAT:  // 心跳
+		onHeartbeatResponse(conn, data);
+		break;
+	case MSG_TYPE_REGISTER:
+		break;
+	case MSG_TYPE_LOGIN:
+		break;
+	case MSG_TYPE_FRIENDLIST:
+		break;
+	case MSG_TYPE_FINDUSER:
+		break;
+	case MSG_TYPE_OPERATEFRIEND:
+		break;
+	case MSG_TYPE_UPDATEUSERINFO:
+		break;
+	case MSG_TYPE_MODIFYPWD:
+		break;
+	case MSG_TYPE_CREATEGROUP:
+		break;
+	case MSG_TYPE_GETGROUPMEMBERS:
+		break;
+	case  MSG_TYPE_CHAT:
+		break;
+	case  MSG_TYPE_GROUPCHAT:
+		break;
 	default:
 		break;
 	}
 	
 	return true;
+}
+
+void ClientSession::onHeartbeatResponse(const muduo::net::TcpConnectionPtr& conn, const string& data)
+{
+	// 包的长度 4字节
+	// 命令类型 4字节
+	// 包的序号 4 字节
+	// 包的数据 数据长度（4字节）+ 包数据
 }
