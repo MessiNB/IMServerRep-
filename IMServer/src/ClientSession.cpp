@@ -1,7 +1,8 @@
 #include "ClientSession.h"
+#include"jsoncpp/json.h"
 #include <iostream>
-#include "BinaryReader.h" 
-using std::string;
+
+using namespace std;
 //有参构造
 ClientSession::ClientSession(const TcpConnectionPtr& conn)
 {
@@ -33,7 +34,7 @@ void ClientSession::onRead(const muduo::net::TcpConnectionPtr& conn, muduo::net:
 		buf->retrieve(sizeof(int32_t));	 // 读掉头部数据大小
 		string msg;
 		msg.assign(buf->peek(), packgeSize);   // 获取数据
-		buf->retrieve(packgeSize)；
+		buf->retrieve(packgeSize);
 			// 处理消息
 		if ( !this->process(conn,msg))
 		{
@@ -54,7 +55,6 @@ bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg
 	size_t dataLen = 0;
 	if (!reader.readData<size_t>(dataLen)) // 数据段大小
 		return false;
-
 	string data;
 	data.resize(dataLen);
 	reader.readData(data);
@@ -95,8 +95,51 @@ bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg
 
 void ClientSession::onHeartbeatResponse(const muduo::net::TcpConnectionPtr& conn, const string& data)
 {
-	// 包的长度 4字节
-	// 命令类型 4字节
-	// 包的序号 4 字节
+	// 包的长度 4字节   不能压缩
+	// 命令类型 4字节	   不能压缩
+	// 包的序号 4 字节	不能压缩
 	// 包的数据 数据长度（4字节）+ 包数据
+
+	BinaryWriter writer;
+	int cmd = MSG_TYPE_HEARTBEAT;
+	writer.writeData<int>(cmd);   // 写入指令
+	writer.writeData<int>(_seq);	// 写入序列号
+	string empty;
+	writer.writeData(empty);
+	string out = writer.getMsg();  // 除了包长度没有的包
+	writer.clear();
+
+	size_t  data_len = out.size();  // 包长度(  没有int的包长度）
+	writer.writeData(data_len);
+	out = writer.getMsg() + out;  // 完整的包
+	
+	if (conn != NULL)
+	{
+		conn->send(out.c_str(), out.size());
+	}
+}
+
+
+// 注册事件
+void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn, const string& data)
+{
+	/*
+		json 数据=   "username":"手机号" ，"nickname":"昵称" , "password":"密码"
+	*/
+
+	Json::Reader reader;
+	Json::Value root;
+
+	if (reader.parse(data, root) == false)
+	{
+		cout << "error json" << endl;
+		return;
+	}
+
+	if (!root["username"].isString  || !root["nickname"].isString || root["password"].isString)
+	{
+		cout << "error type" << endl;
+		return;
+	}
+
 }

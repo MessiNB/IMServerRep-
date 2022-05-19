@@ -19,6 +19,8 @@ set(server_srcs IMServer.cpp main.cpp ClientSession.cpp)
 
 set(mysql_srcs MysqlTool.cpp QueryResult.cpp Field.cpp MysqlBusiness.cpp)
 
+set(json_srcs jsoncpp/json_reader.cpp jsoncpp/json_writer.cpp jsoncpp/json_value.cpp)
+
 # 链接库文件目录(针对64位)
 link_directories(
 	${PROJECT_SOURCE_DIR} /lib
@@ -35,7 +37,7 @@ if(NOT MYSQL_LIB)
 endif(NOT MYSQL_LIB)
 
 # 将源代码添加到此项目的可执行文件。
-add_executable (IMServer ${server_srcs} ${muduo_base_srcs} ${muduo_net_srcs} ${mysql_srcs})
+add_executable (IMServer ${server_srcs} ${muduo_base_srcs} ${muduo_net_srcs} ${mysql_srcs} ${json_srcs})
 
 # 链接库
 target_link_libraries(IMServer mysqlclient)

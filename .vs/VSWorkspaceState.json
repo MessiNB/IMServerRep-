@@ -3,11 +3,8 @@
     "",
     "\\IMServer",
     "\\IMServer\\out",
-    "\\IMServer\\src",
-    "\\IMServer\\src\\muduo\\base",
-    "\\IMServer\\src\\muduo\\net\\inspect",
-    "\\IMServer\\src\\muduo\\net\\protobuf"
+    "\\IMServer\\src"
   ],
-  "SelectedNode": "\\IMServer\\src\\muduo",
+  "SelectedNode": "\\IMServer\\src\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

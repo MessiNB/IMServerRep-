@@ -6,6 +6,8 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include "BinaryReader.h"
+#include "BinaryWriter.h"
 using namespace muduo;
 using namespace muduo::net;
 using namespace boost::uuids;
@@ -63,6 +65,9 @@ public:
 
 	// 心跳处理
 	void onHeartbeatResponse(const muduo::net::TcpConnectionPtr& conn, const string &data);
+
+	// 注册消息处理
+	void onRegisterResponse(const muduo::net::TcpConnectionPtr& conn, const string& data);
 
 private:
 	//uuid_t _sessionId; //唯一 会话id（实际为 char[16]， 在Linux中）
