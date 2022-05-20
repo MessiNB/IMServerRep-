@@ -3,45 +3,48 @@
 MysqlManager::MysqlManager()
 {
 	sTableInfo info;
-
-	//�û���Ϣ
-	info.sName = "users";
-	info.mFields["id"] = { "id", "bigint(20) NOTNULL AUTO_INCREMENT COMMENT '����id' ", "bigint(20)" };
-	info.mFields["user_id"] = { "user_id", "bigint(20) NOTNULL   COMMENT '�û�id' ", "bigint(20)" };
-	info.mFields["user_name"] = { "user_nickname", "varchar(64) NOTNULL   COMMENT '�û���' ", "varchar(64)" };
-	info.mFields["user_nickname"] = { "user_name", "varchar(64) NOTNULL   COMMENT '�û��ǳ�' ", "varchar(64)" };
-	info.mFields["user_password"] = { "user_password", "varchar(64) NOTNULL   COMMENT '�û�����' ", "varchar(64)" };
-	info.mFields["user_facetype"] = { "user_facetype", "int(10) DEFAULT 0   COMMENT 'ͷ������' ", "int(10)" };
-	info.mFields["user_customface"] = { "user_customface", "varchar(32) DEFAULT NULL   COMMENT '�Զ���ͷ����' ", "varchar(32)" };
-	info.mFields["user_gender"] = { "user_gender", "int(2) DEFAULT 0   COMMENT '�Ա� ", "int(2)" };
-	info.mFields["user_birthday"] = { "user_birthday", "int(11) DEFAULT 20000101   COMMENT '����' ", "int(11)" };
-	info.mFields["user_address"] = { "user_address", "varchar(256) DEFAULT NULL  COMMENT '��ַ' ", "varcahr(256)" };
-	info.mFields["user_phone"] = { "user_phone", "varchar(11) D EFAULT NULL  COMMENT '�ֻ�' ", "varcahr(11)" };
-	info.mFields["user_email"] = { "user_email", "varchar(256) DEFAULT NULL  COMMENT '����' ", "varcahr(256)" };
-	info.mFields["user_email"] = { "user_email", "datetime NOTNULL  COMMENT 'ע��ʱ��' ", "datetime" };
-	info.sKey = "PRIMARY KEY (user_id), INDEX user_id (user_id), KEY id (id)";
+	//用户
+	info.sName = "user";
+	info.mFields["id"] = { "id","bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增ID'","bigint(20)" };
+	info.mFields["user_id"] = { "user_id", "bigint(20) NOT NULL COMMENT '用户ID'", "bigint(20)" };
+	info.mFields["username"] = { "username", "varchar(64) NOT NULL COMMENT '用户名'", "varchar(64)" };
+	info.mFields["nickname"] = { "nickname", "varchar(64) NOT NULL COMMENT '用户昵称'", "varchar(64)" };
+	info.mFields["password"] = { "password", "varchar(64) NOT NULL COMMENT '用户密码'", "varchar(64)" };
+	info.mFields["facetype"] = { "facetype", "int(10) DEFAULT 0 COMMENT '用户头像类型'", "int(10)" };
+	info.mFields["customface"] = { "customface", "varchar(32) DEFAULT NULL COMMENT '自定义头像名'", "varchar(32)" };
+	info.mFields["customfacefmt"] = { "customfacefmt", "varchar(6) DEFAULT NULL COMMENT '自定义头像格式'", "varchar(6)" };
+	info.mFields["gender"] = { "gender", "int(2)  DEFAULT 0 COMMENT '性别'", "int(2)" };
+	info.mFields["birthday"] = { "birthday", "bigint(20)  DEFAULT 19900101 COMMENT '生日'", "bigint(20)" };
+	info.mFields["signature"] = { "signature", "varchar(256) DEFAULT NULL COMMENT '地址'", "varchar(256)" };
+	info.mFields["address"] = { "address", "varchar(256) DEFAULT NULL COMMENT '地址'", "varchar(256)" };
+	info.mFields["phonenumber"] = { "phonenumber", "varchar(64) DEFAULT NULL COMMENT '电话'", "varchar(64)" };
+	info.mFields["mail"] = { "mail", "varchar(256) DEFAULT NULL COMMENT '邮箱'", "varchar(256)" };
+	info.mFields["owner_id"] = { "owner_id", "bigint(20) DEFAULT 0 COMMENT '群账号群主userid'", "bigint(20)" };
+	info.mFields["register_time"] = { "register_time", "datetime NOT NULL COMMENT '注册时间'", "datetime" };
+	info.mFields["remark"] = { "remark", "varchar(64) NULL COMMENT '备注'", "varchar(64)" };
+	info.mFields["update_time"] = { "update_time", "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'", "timestamp" };
+	info.sKey = "PRIMARY KEY (user_id), INDEX user_id (user_id), KEY  id  ( id )";
 	_mTables.insert(PairTAble(info.sName, info));
-
-	//��������
+	//聊天内容
 	info.mFields.clear();
 	info.sName = "chatmsg";
-	info.mFields["id"] = { "id", "bigint(20) NOT NULL AUTO_INCREMENT COMMENT '����ID'", "bigint(20)" };
-	info.mFields["senderid"] = { "senderid", "bigint(20) NOT NULL COMMENT '������id'", "bigint(20)" };
-	info.mFields["targetid"] = { "targetid", "bigint(20) NOT NULL COMMENT '������id'", "bigint(20)" };
-	info.mFields["msgcontent"] = { "msgcontent", "blob NOT NULL COMMENT '��������'", "blob" };
-	info.mFields["create_time"] = { "create_time", "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '����ʱ��'", "timestamp" };
-	info.mFields["remark"] = { "remark", "varchar(64) NULL COMMENT '��ע'", "varchar(64)" };
+	info.mFields["id"] = { "id", "bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增ID'", "bigint(20)" };
+	info.mFields["senderid"] = { "senderid", "bigint(20) NOT NULL COMMENT '发送者id'", "bigint(20)" };
+	info.mFields["targetid"] = { "targetid", "bigint(20) NOT NULL COMMENT '接收者id'", "bigint(20)" };
+	info.mFields["msgcontent"] = { "msgcontent", "blob NOT NULL COMMENT '聊天内容'", "blob" };
+	info.mFields["create_time"] = { "create_time", "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'", "timestamp" };
+	info.mFields["remark"] = { "remark", "varchar(64) NULL COMMENT '备注'", "varchar(64)" };
 	info.sKey = "PRIMARY KEY (id), INDEX id (id)";
 	_mTables.insert(PairTAble(info.sName, info));
 
-	//�û���ϵ
+	//用户关系
 	info.mFields.clear();
 	info.sName = "user_relationship";
-	info.mFields["id"] = { "id", "bigint(20) NOT NULL AUTO_INCREMENT COMMENT '����ID'", "bigint(20)" };
-	info.mFields["user_id1"] = { "user_id1", "bigint(20) NOT NULL COMMENT '�û�ID'", "bigint(20)" };
-	info.mFields["user_id2"] = { "user_id2", "bigint(20) NOT NULL COMMENT '�û�ID'", "bigint(20)" };
-	info.mFields["remark"] = { "remark", "varchar(64) NULL COMMENT '��ע'", "varchar(64)" };
-	info.mFields["create_time"] = { "create_time", "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '����ʱ��'", "timestamp" };
+	info.mFields["id"] = { "id", "bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增ID'", "bigint(20)" };
+	info.mFields["user_id1"] = { "user_id1", "bigint(20) NOT NULL COMMENT '用户ID'", "bigint(20)" };
+	info.mFields["user_id2"] = { "user_id2", "bigint(20) NOT NULL COMMENT '用户ID'", "bigint(20)" };
+	info.mFields["remark"] = { "remark", "varchar(64) NULL COMMENT '备注'", "varchar(64)" };
+	info.mFields["create_time"] = { "create_time", "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'", "timestamp" };
 	info.sKey = "PRIMARY KEY (id), INDEX id (id)";
 	_mTables.insert(PairTAble(info.sName, info));
 }
@@ -53,13 +56,13 @@ bool MysqlManager::init(const string& host, const string& user, const string& pw
 	if (!res)
 		return false;
 
-	// TODO: ���ݿ��Ƿ����
+	// TODO: 锟斤拷锟捷匡拷锟角凤拷锟斤拷锟?
 	if (checkDatabase() == false)
 	{
 		if (createDataBase() == false)
 			return false;
 	}
-	// TODO: ���Ƿ����
+	// TODO: 锟斤拷锟角凤拷锟斤拷锟?
 	std::map < std::string, MysqlManager::sTableInfo>::iterator it = _mTables.begin();
 	for (; it != _mTables.end(); it++)
 	{
@@ -105,33 +108,33 @@ bool MysqlManager::checkTable(const std::string tableName)
 	sql << "desc " << tableName << ";";
 	QueryResultPtr result = _mysqlToolPtr->query(sql.str());
 
-	//�����������
+	//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟?
 	if (NULL == result)
 	{
 		return false;
 	}
 
-	std::map<std::string, sFieldInfo> map_reset(_mTables[tableName].mFields);  // Ҫ׷�ӵ�
-	std::map<std::string, sFieldInfo> map_change;									  // Ҫ���µ�
+	std::map<std::string, sFieldInfo> map_reset(_mTables[tableName].mFields);  // 要追锟接碉拷
+	std::map<std::string, sFieldInfo> map_change;									  // 要锟斤拷锟铰碉拷
 
-	// �����Ƿ���ȷ, �ֶ������ֶ�����
+	// 锟斤拷锟斤拷锟角凤拷锟斤拷确, 锟街讹拷锟斤拷锟斤拷锟街讹拷锟斤拷锟斤拷
 	Field* fields = result->Fetch();
 	while (NULL != fields)
 	{
 		if (result->nextRow() == false)
 			break;
-		std::string name = fields[0].getValue();  //���ݿ����ֶ���
-		std::string type = fields[1].getValue();  //���ݿ����ֶ�����
+		std::string name = fields[0].getValue();  //锟斤拷锟捷匡拷锟斤拷锟街讹拷锟斤拷
+		std::string type = fields[1].getValue();  //锟斤拷锟捷匡拷锟斤拷锟街讹拷锟斤拷锟斤拷
 		auto it = _mTables[tableName].mFields.find(name);
 		if (it == _mTables[tableName].mFields.end())
 		{
-			// TODO: ����û�и��ֶ�
+			// TODO: 锟斤拷锟斤拷没锟叫革拷锟街讹拷
 			continue;
 		}
-		map_reset.erase(name);  // ���ݿ��кʹ����ж��У��� Ҫ׷�ӵ���ɾ��
+		map_reset.erase(name);  // 锟斤拷锟捷匡拷锟叫和达拷锟斤拷锟叫讹拷锟叫ｏ拷锟斤拷 要追锟接碉拷锟斤拷删锟斤拷
 		if (it->second.sType != type)
 		{
-			// �ֶ����Ͳ�ͬ���޸��ֶ�����
+			// 锟街讹拷锟斤拷锟酵诧拷同锟斤拷锟睫革拷锟街讹拷锟斤拷锟斤拷
 			map_change.insert(PairFiled(name, it->second));
 		}
 	}
