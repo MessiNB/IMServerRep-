@@ -1,6 +1,8 @@
 #include "ClientSession.h"
 #include"jsoncpp/json.h"
 #include <iostream>
+#include "UserManager.h"
+#include "muduo/base/Singleton.h"
 
 using namespace std;
 //有参构造
@@ -25,11 +27,11 @@ ClientSession::~ClientSession() {
 void ClientSession::onRead(const muduo::net::TcpConnectionPtr& conn, muduo::net::Buffer* buf, muduo::Timestamp time)
 {
 	// TODO: 读出消息
-	while (buf->readableBytes() >= sizeof(int32_t))  // 可能多条消息 作为一个包
+	while (buf->readableBytes() >= sizeof(int32_t))  // 可能多条消息 作为一个包 粘包
 	{
 		int32_t packgeSize = 0;
 		packgeSize = *static_cast<int32_t*> (buf->peek());  // 不真正读出来
-		if (buf->readableBytes() < sizeof(int32_t) + packgeSize)  // 数据不完整
+		if (buf->readableBytes() < sizeof(int32_t) + packgeSize)  // 数据不完整 （int型的数据大小 + 数据包大小）
 			return;
 		buf->retrieve(sizeof(int32_t));	 // 读掉头部数据大小
 		string msg;
@@ -44,6 +46,7 @@ void ClientSession::onRead(const muduo::net::TcpConnectionPtr& conn, muduo::net:
 
 }
 
+// 消息处理
 bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg)
 {
 	BinaryReader reader(msg);
@@ -136,10 +139,40 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 		return;
 	}
 
+	// 判断格式 是否正确
 	if (!root["username"].isString  || !root["nickname"].isString || root["password"].isString)
 	{
 		cout << "error type" << endl;
 		return;
 	}
 
+	// 获取数据
+	User user;
+	user._userName = root["username"].asString();
+	user._nickName = root["nicknime"].asString();
+	user._passWord = root["password"].asString();
+
+	BinaryWriter writer;
+	writer.writeData(MSG_TYPE_REGISTER);
+	writer.writeData(this->_seq);
+
+	if (! Singleton<UserManager>::instance().addUser(user) )
+	{	// 添加失败
+		cout << "add user failed" << endl;
+		Json::Value jv;
+		jv["code"] = -1;//  -1 表示 失败
+		jv["msg"] = "register failed";
+		std::string res = jv.toStyledString();
+		writer.writeData(res);
+		return;
+	}
+	else
+	{
+		Json::Value jv;
+		jv["code"] = 0;// 0 表示成功
+		jv["msg"] = "register ok";
+		std::string res = jv.toStyledString();
+		writer.writeData(res);
+	}
+	send(conn, writer);
 }

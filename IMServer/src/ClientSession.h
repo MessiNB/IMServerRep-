@@ -54,6 +54,20 @@ public:
 		return _sessionId;
 	}
 
+	// 发送数据
+	void send(const muduo::net::TcpConnectionPtr& conn , BinaryWriter& writer)
+	{
+		string out = writer.getMsg();
+		writer.clear();
+		int len = out.size();
+		writer.writeData(len);
+		out = writer.getMsg + out;
+		if (conn != NULL)
+		{
+			conn->send(out.c_str(), out.size());
+		}
+	}
+
 	// 读事件
 	void onRead(const muduo::net::TcpConnectionPtr& conn, muduo::net::Buffer* buf, muduo::Timestamp time);
 

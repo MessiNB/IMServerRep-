@@ -13,8 +13,6 @@ class User
 public:
 	USer() = default;
 	~USer() = default;
-
-private:
 	int32_t				 _userId = -1;
 	std::string			 _userName;
 	std::string			 _passWord;
@@ -51,6 +49,7 @@ public:
 
 	// 从数据库 加载用户信息、
 	bool loadUsers();
+
 
 	// 加载用户关系
 	bool loadReles(int32_t userId, const std::set<int32_t>& friends);

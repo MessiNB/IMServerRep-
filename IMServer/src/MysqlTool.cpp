@@ -14,7 +14,7 @@ bool MysqlTool::connect(const std::string& host, const std::string& user,
 const std::string& pwd, const std::string& dbName, const uint32_t port)
 {
 	closeDB();
-	// ��ʼ��
+	// 初始化 句柄
 	_mysql = mysql_init(_mysql);
 
 	//����

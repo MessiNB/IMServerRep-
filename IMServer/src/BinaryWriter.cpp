@@ -22,6 +22,7 @@ void BinaryWriter::compress(size_t len, string& out)				// 对小数据进行压缩
 	}
 }
 
+
 template <class T>
 bool BinaryWriter::writeData(T& data)
 {

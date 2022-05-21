@@ -8,6 +8,7 @@
 #include <exception>
 #include <signal.h>
 #include <fcntl.h>
+#include "UserManager.h"
 
 using namespace std;
 
@@ -112,11 +113,21 @@ int main(int argc, char* argv[], char* env[])
 	// 创建一个事件循环对象（必须在线程中开启循环）
 	muduo::net::EventLoop loop;
 
+	//  加载数据库相关
 	if (Singleton<MysqlManager>::instance().init("127.0.0.1","root","123456","IMServer",3306) == false)
 	{
 		cout << "database init false ";
 		return -2;
 	}
+
+	// 加载用户相关
+	if (Singleton<UserManager> ::instance().init() == false)
+	{
+		cout << "load User" << endl;
+		return -3;
+	}
+
+
 
 	if (Singleton<IMServer>::instance().init("0.0.0.0", 9527, &loop) == false)
 	{

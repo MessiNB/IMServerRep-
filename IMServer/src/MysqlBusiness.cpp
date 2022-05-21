@@ -52,17 +52,18 @@ MysqlManager::MysqlManager()
 bool MysqlManager::init(const string& host, const string& user, const string& pwd, const string& dbname, const uint32_t port)
 {
 	_mysqlToolPtr.reset(new MysqlTool);
+	// 连接数据库
 	bool res = _mysqlToolPtr->connect(host, user, pwd, dbname, port);
 	if (!res)
 		return false;
 
-	// TODO: 锟斤拷锟捷匡拷锟角凤拷锟斤拷锟?
+	// TODO: 检查数据库
 	if (checkDatabase() == false)
 	{
 		if (createDataBase() == false)
 			return false;
 	}
-	// TODO: 锟斤拷锟角凤拷锟斤拷锟?
+	// TODO: 检查表
 	std::map < std::string, MysqlManager::sTableInfo>::iterator it = _mTables.begin();
 	for (; it != _mTables.end(); it++)
 	{
