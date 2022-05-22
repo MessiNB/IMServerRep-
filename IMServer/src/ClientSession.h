@@ -11,6 +11,7 @@
 using namespace muduo;
 using namespace muduo::net;
 using namespace boost::uuids;
+using std::string;
 
 class ClientSession;
 
@@ -36,6 +37,17 @@ enum {
 	MSG_TYPE_GROUPCHAT ,						// 群聊
 };
 
+enum
+{
+	RES_PARSE_FAILED = 400,   //json 解析失败
+	RES_JOSNTYPE_ERROR,		// json	格式错误
+	RES_REGISTER_FAIED,			// 注册失败
+	RES_LOGIN_FAILED ,			// 登录失败
+
+	RES_REGISTER_SUCCESS = 200 , //注册成功
+	RES_LOGIN_SUCCESS,			//登录成功
+};
+
 //客户端会话，通过会话id 找到对应连接
 class ClientSession
 {
@@ -54,13 +66,21 @@ public:
 		return _sessionId;
 	}
 
+	std::string getJsonString(int code , const std::stirng& msg  )
+	{
+		Json::Value value;
+		value["code"] = code;
+		value["msg"] = msg;
+		return value.toStyledString();
+	}
+
 	// 发送数据
 	void send(const muduo::net::TcpConnectionPtr& conn , BinaryWriter& writer)
 	{
 		string out = writer.getMsg();
 		writer.clear();
 		int len = out.size();
-		writer.writeData(len);
+		writer.writeData(len); // 获取包长度
 		out = writer.getMsg + out;
 		if (conn != NULL)
 		{
@@ -82,6 +102,11 @@ public:
 
 	// 注册消息处理
 	void onRegisterResponse(const muduo::net::TcpConnectionPtr& conn, const string& data);
+
+	// 登录消息处理
+	void onLoginResponse(const muduo::net::TcpConnectionPtr& conn, const string& data);
+
+	
 
 private:
 	//uuid_t _sessionId; //唯一 会话id（实际为 char[16]， 在Linux中）

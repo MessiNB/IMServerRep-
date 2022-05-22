@@ -44,37 +44,39 @@ QueryResultPtr MysqlTool::query(const std::string& sql)
 	if (NULL == _mysql)
 	{
 		if (connect(_host, _user,_pwd ,_dbname) == false)
-			return QueryResultPtr();  // ���Ӳ������ݿ� ���ؿյ� shard_ptr
+			return QueryResultPtr();  // 失败返回空的 共享指针
 	}
-	int ret = mysql_real_query(_mysql, sql.c_str(), sql.size()); //��ѯ�ɹ�����0
+	int ret = mysql_real_query(_mysql, sql.c_str(), sql.size()); //二进制 查询
 	if (ret != 0) {
-		// ��ѯʧ��
-		uint32_t nErrno = mysql_errno(_mysql); //��ȡ���� code
+		// 非0表示 失败
+		uint32_t nErrno = mysql_errno(_mysql); //获取错误 code
 		std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 
-		// ��� �� ��������ԭ�򣬱�������Ͽ�����������
+		// 如果是服务器的原因（比如网络断开），再重连一次
 		if (CR_SERVER_GONE_ERROR == nErrno)
 		{
 			if (connect(_host, _user,_pwd ,_dbname) == false)
-				return QueryResultPtr();  // ���Ӳ������ݿ� ���ؿյ� shard_ptr
+				return QueryResultPtr();  
 
 			ret = mysql_real_query(_mysql, sql.c_str(), sql.size());
 			if (0 != ret)
 			{
-				nErrno = mysql_errno(_mysql); //��ȡ���� code
+				nErrno = mysql_errno(_mysql); 
 				std::cout << "[" << sql << "]  failed , errno = " << nErrno << " , error = " << mysql_error(_mysql) << std::endl;
 				return QueryResultPtr();
 			}
 		}
 		else
 		{
-			// ���Ƿ��������µ� ��ѯʧ��
+			// 不是服务器的原因，直接返回 空指针
 			return QueryResultPtr();
 		}
 	}
-	MYSQL_RES* res = mysql_store_result(_mysql);				// ��ȡ��ѯ���ؽ����
-	MyLong  rowCount = mysql_affected_rows(_mysql);		// ��ȡ ����
-	uint32_t columnCount = mysql_field_count(_mysql);		// ��ȡ ����
+	MYSQL_RES* res = mysql_store_result(_mysql);				// 获取结果集
+	MyLong  rowCount = mysql_affected_rows(_mysql);		// 获取行数
+	if (rowCount == 0)
+		return QueryResultPtr();
+	uint32_t columnCount = mysql_field_count(_mysql);		// 获取列数
 
 	return QueryResultPtr(new QueryResult(res, rowCount, columnCount));
 }

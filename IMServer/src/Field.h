@@ -28,13 +28,14 @@ public:
 	void setName (const std::string name)  {  _name = name; }
 	void setValue(const char* value);
 	IMDataTypes getType()  const { return _type; }					// 返回字段类型
-	const std::string& getName() const { return _name; }		// 返回字段名 
-	const std::string& getValue() const { return _value; }			// 返回字段值
+	std::string& getName() const { return _name; }		// 返回字段名 
+	std::string& getValue() const { return _value; }			// 返回字段值
 	
 	bool toBool() const { return atoi(_value.c_str()) != 0;  }		// 返回 bool 值，如果值为0 返回 false
 	int8_t toInt8() const { return static_cast<int8_t> (atoi(_value.c_str())); }
 	int32_t toInt32() const { return atoi(_value.c_str()); }
 	int64_t toInt64() const { return atoll(_value.c_str()); }
+
 
 	bool isEmpty() const { return _isEmpty; }						// 字段值是否为空
 

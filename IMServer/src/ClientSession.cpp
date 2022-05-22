@@ -10,7 +10,7 @@ ClientSession::ClientSession(const TcpConnectionPtr& conn)
 {
 	// 生成uuid
 	//uuid_generate(_sessionId); // 生成 id（Linux下）
-	_sessionId = to_string(random_generator() ());
+	_sessionId = to_string(random_generator() ()); //注意是两个 （）
 	TcpConnectionPtr* client = const_cast<TcpConnectionPtr*> (&conn);
 	*const_cast<std::string*> (&conn->name()) = _sessionId; //修改连接的name
 
@@ -129,20 +129,25 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 	/*
 		json 数据=   "username":"手机号" ，"nickname":"昵称" , "password":"密码"
 	*/
-
 	Json::Reader reader;
 	Json::Value root;
-
+	BinaryWriter writer;
+	writer.writeData(MSG_TYPE_REGISTER);
+	writer.writeData(this->_seq);
 	if (reader.parse(data, root) == false)
 	{
-		cout << "error json" << endl;
+		std::string res = this->getJsonString(RES_PARSE_FAILED, "json parse faied");
+		writer.writeData(res);
+		this->send(conn, writer);
 		return;
 	}
 
 	// 判断格式 是否正确
 	if (!root["username"].isString  || !root["nickname"].isString || root["password"].isString)
 	{
-		cout << "error type" << endl;
+		std::string res = this->getJsonString(RES_JOSNTYPE_ERROR, "json type error");
+		writer.writeData(res);
+		this->send(conn, writer);
 		return;
 	}
 
@@ -152,27 +157,79 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 	user._nickName = root["nicknime"].asString();
 	user._passWord = root["password"].asString();
 
-	BinaryWriter writer;
-	writer.writeData(MSG_TYPE_REGISTER);
-	writer.writeData(this->_seq);
-
 	if (! Singleton<UserManager>::instance().addUser(user) )
 	{	// 添加失败
 		cout << "add user failed" << endl;
-		Json::Value jv;
-		jv["code"] = -1;//  -1 表示 失败
-		jv["msg"] = "register failed";
-		std::string res = jv.toStyledString();
+		std::string res =  this->getJsonString(RES_REGISTER_FAIED, "register failed");
 		writer.writeData(res);
-		return;
 	}
 	else
 	{
-		Json::Value jv;
-		jv["code"] = 0;// 0 表示成功
-		jv["msg"] = "register ok";
-		std::string res = jv.toStyledString();
+		std::string res = this->getJsonString(RES_REGISTER_SUCCESS, "register success");
 		writer.writeData(res);
 	}
-	send(conn, writer);
+	this->send(conn, writer);
+}
+
+// 登录时间处理
+void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, const string& data)
+{
+		// json 数据：{"user" :"手机号/UserId" ， "password" : "密码"，"status" : 1 }
+
+	Json::Reader reader;
+	Json::Value value;
+	BinaryWriter  writer;
+
+	writer.writeData(MSG_TYPE_LOGIN);
+	writer.writeData(this->_seq); 
+	if (reader.parse(data, value) == false)
+	{
+		std::string res = this->getJsonString(RES_PARSE_FAILED, "json parse faied");
+		writer.writeData(res);
+		this->send(conn, writer);
+		return;
+	}
+
+	//json 格式有误
+	if ( !value["password"].isString() || !value["stastus"].isInt())
+	{
+		std::string res = this->getJsonString(RES_JOSNTYPE_ERROR, "json josn type error");
+		writer.writeData(res);
+		this->send(conn, writer);
+		return;
+	}
+
+	string sAccount;
+	int32_t iAccount = 0;
+	string password = value["password"].asString();
+	int status = value["status"].asInt();
+
+	// 获取 登录方式（手机号/ user id)
+	if (value["user"].isString())
+	{
+		// 手机号
+		sAccount = value["user"].asString();
+	}
+	else
+	{
+		iAccount = value["user"].asInt();
+	}
+
+	User user;
+
+	if (iAccount != 0)
+	{
+		Singleton<UserManager>::instance().getUserInfo(iAccount,user);
+	}
+	else
+	{
+		Singleton<UserManager>::instance().getUserInfo(sAccount, user);
+	}
+
+	// 缓冲中为找到
+	if (user._userId == 0)
+	{
+		
+	}
+
 }

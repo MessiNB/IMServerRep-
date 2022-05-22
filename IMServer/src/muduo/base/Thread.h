@@ -41,7 +41,7 @@ class Thread : noncopyable
 
   bool       started_;
   bool       joined_;
-  pthread_t  pthreadId_;
+  pthread_t  pthreadId_; //线程普通id
   pid_t      tid_;
   ThreadFunc func_;
   string     name_;

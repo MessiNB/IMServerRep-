@@ -33,6 +33,13 @@ public:
 		return _mysqlToolPtr->query(sql);
 	}
 
+	bool excute(const string& sql)
+	{
+		if (_mysqlToolPtr == nullptr)
+			return false;
+		return _mysqlToolPtr->execute(sql);
+	}
+
 private:
 	bool checkDatabase();						  //检查数据库是否存在
 	bool checkTable(const std::string tableName); // 检查表

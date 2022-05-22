@@ -8,15 +8,17 @@
 #include<string>
 #include<set>
 #include <list>
+#include<mutex>
 class User
 {
 public:
 	USer() = default;
 	~USer() = default;
-	int32_t				 _userId = -1;
+	int32_t				 _userId = 0; //int32_t
 	std::string			 _userName;
 	std::string			 _passWord;
 	std::string			 _nickName;
+	std::string			_signature; //个性签名
 	int32_t				_faceType = -1;  // 默认头像
 	std::string			_customFace;
 	std::string			 _customFaceFmt; // 自定义头像格式
@@ -47,14 +49,20 @@ public:
 	// 添加用户
 	bool addUser(User& user);
 
-	// 从数据库 加载用户信息、
+	// 从数据库 加载所有用户信息、
 	bool loadUsers();
 
 
 	// 加载用户关系
-	bool loadReles(int32_t userId, const std::set<int32_t>& friends);
+	bool loadRelation(int32_t userId, std::set<int32_t>& friends);
+
+	// 获取单个用户信息
+	bool getUserInfo(const std::string& username, User& user);
+	bool getUserInfo(const int userid, User& user);
 
 private:
 	std::list<User> _cachedUsers;  // 用户信息缓存
+	int32_t _currentUserId = 10000; //当前可用 用户id
+	std::mutex _mutex;     // 缓存互斥体
 };
 
