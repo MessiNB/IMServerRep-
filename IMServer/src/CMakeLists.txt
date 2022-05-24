@@ -15,7 +15,7 @@ muduo/net/poller/EPollPoller.cc muduo/net/poller/PollPoller.cc muduo/net/InetAdd
 muduo/net/EventLoopThread.cc muduo/net/EventLoopThreadPool.cc muduo/net/Timer.cc muduo/net/TimerQueue.cc muduo/net/SocketsOps.cc
 )
 
-set(server_srcs IMServer.cpp main.cpp ClientSession.cpp)
+set(server_srcs IMServer.cpp main.cpp ClientSession.cpp UserManager.cpp BinaryReader.cpp BinaryWriter.cpp)
 
 set(mysql_srcs MysqlTool.cpp QueryResult.cpp Field.cpp MysqlBusiness.cpp)
 

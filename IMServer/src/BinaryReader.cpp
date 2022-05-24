@@ -1,5 +1,5 @@
 #include "BinaryReader.h"
-
+#include <cstring>
 BinaryReader::operator=(const BinaryReader& reader)
 {
 		if (this != &reader)
@@ -23,7 +23,7 @@ bool BinaryReader::readData(T& data)
 template<>
 bool BinaryReader::readData(std::string& data)
 {
-	memcpy((char*)data, _msg.c_str() + _index, data.size());
+	memcpy((char*)data.c_str(), _msg.c_str() + _index, data.size());
 	_index += data.size();
 	// TODO：处理结构体数据
 	return true;

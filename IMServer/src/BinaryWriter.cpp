@@ -16,7 +16,7 @@ void BinaryWriter::compress(size_t len, string& out)				// 对小数据进行压缩
 		c = (len >> (7 * i)) & 0x7F;
 		if (c == 0 && out.size() == 0)  //目前还没有数据
 			continue;
-		if (a > 0) //  最后七位
+		if (i > 0) //  说明不是 最后七位
 			c |= 0x80;
 		out += c;
 	}

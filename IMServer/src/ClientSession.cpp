@@ -68,8 +68,10 @@ bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg
 		onHeartbeatResponse(conn, data);
 		break;
 	case MSG_TYPE_REGISTER:
+		onRegisterResponse(conn, data);
 		break;
 	case MSG_TYPE_LOGIN:
+		onLoginResponse(conn, data);
 		break;
 	case MSG_TYPE_FRIENDLIST:
 		break;
@@ -132,11 +134,11 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 	Json::Reader reader;
 	Json::Value root;
 	BinaryWriter writer;
-	writer.writeData(MSG_TYPE_REGISTER);
+	writer.writeData((int)MSG_TYPE_REGISTER);
 	writer.writeData(this->_seq);
 	if (reader.parse(data, root) == false)
 	{
-		std::string res = this->getJsonString(RES_PARSE_FAILED, "json parse faied");
+		std::string res = this->getJsonString((int)RES_PARSE_FAILED, "json parse faied");
 		writer.writeData(res);
 		this->send(conn, writer);
 		return;
@@ -145,7 +147,7 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 	// 判断格式 是否正确
 	if (!root["username"].isString  || !root["nickname"].isString || root["password"].isString)
 	{
-		std::string res = this->getJsonString(RES_JOSNTYPE_ERROR, "json type error");
+		std::string res = this->getJsonString((int)RES_JOSNTYPE_ERROR, "json type error");
 		writer.writeData(res);
 		this->send(conn, writer);
 		return;
@@ -160,28 +162,28 @@ void  ClientSession::onRegisterResponse(const muduo::net::TcpConnectionPtr& conn
 	if (! Singleton<UserManager>::instance().addUser(user) )
 	{	// 添加失败
 		cout << "add user failed" << endl;
-		std::string res =  this->getJsonString(RES_REGISTER_FAIED, "register failed");
+		std::string res =  this->getJsonString((int)RES_REGISTER_FAIED, "register failed");
 		writer.writeData(res);
 	}
 	else
 	{
-		std::string res = this->getJsonString(RES_REGISTER_SUCCESS, "register success");
+		std::string res = this->getJsonString((int)RES_REGISTER_SUCCESS, "register success");
 		writer.writeData(res);
 	}
 	this->send(conn, writer);
 }
 
-// 登录时间处理
+// 登录事件处理
 void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, const string& data)
 {
-		// json 数据：{"user" :"手机号/UserId" ， "password" : "密码"，"status" : 1 }
+	// json 数据：{"user" :"手机号/UserId" ， "password" : "密码"，"status" : 1 }
 
 	Json::Reader reader;
 	Json::Value value;
 	BinaryWriter  writer;
 
-	writer.writeData(MSG_TYPE_LOGIN);
-	writer.writeData(this->_seq); 
+	writer.writeData((int)MSG_TYPE_LOGIN);
+	writer.writeData(this->_seq);
 	if (reader.parse(data, value) == false)
 	{
 		std::string res = this->getJsonString(RES_PARSE_FAILED, "json parse faied");
@@ -191,16 +193,17 @@ void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, co
 	}
 
 	//json 格式有误
-	if ( !value["password"].isString() || !value["stastus"].isInt())
+	if (!value["password"].isString() || !value["stastus"].isInt())
 	{
 		std::string res = this->getJsonString(RES_JOSNTYPE_ERROR, "json josn type error");
 		writer.writeData(res);
 		this->send(conn, writer);
 		return;
 	}
-
+	User user;
 	string sAccount;
-	int32_t iAccount = 0;
+	int32_t iAccount = -1;
+	bool bRet = false;
 	string password = value["password"].asString();
 	int status = value["status"].asInt();
 
@@ -209,27 +212,55 @@ void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, co
 	{
 		// 手机号
 		sAccount = value["user"].asString();
+		bRet = Singleton<UserManager>::instance().getUserInfoFromCached(sAccount, user);
+		if (!bRet)
+			bRet = Singleton<UserManager>::instance().getUserInfoFromDB(sAccount, user);
 	}
 	else
 	{
 		iAccount = value["user"].asInt();
+		bRet = Singleton<UserManager>::instance().getUserInfoFromCached(iAccount, user);
+		if (!bRet)
+		{
+			bRet = Singleton<UserManager>::instance().getUserInfoFromDB(iAccount, user);
+		}
 	}
 
-	User user;
-
-	if (iAccount != 0)
+	if (!bRet)
 	{
-		Singleton<UserManager>::instance().getUserInfo(iAccount,user);
-	}
-	else
-	{
-		Singleton<UserManager>::instance().getUserInfo(sAccount, user);
-	}
-
-	// 缓冲中为找到
-	if (user._userId == 0)
-	{
-		
+		// 未注册
+		sring msg = this->getJsonString(RES_LOGIN_NOREGISTER, "user is not exist or password is incorrecr!");
+		writer.writeData(msg);
+		this->send(conn, writer);
+		return;
 	}
 
+	if (user._passWord != password)
+	{
+		// 密码不正确
+		sring msg = this->getJsonString(RES_LOGIN_NOPASSWORD, "user is not exist or password is incorrecr!");
+		writer.writeData(msg);
+		this->send(conn, writer);
+		return;
+	}
+
+	// 登录成功 
+	Json::Value response;
+	response["code"] = (int)RES_LOGIN_SUCCESS;
+	response["msg"] = "user is not exist or password is incorrecr!";
+	response["userid"] = user._userId;
+	response["username"] = user._userName;
+	response["nickname"] = user._nickName;
+	response["facetype"] = user._faceType;
+	response["customface"] = user._customFace;
+	response["gender"] = user._gender;
+	response["birthday"] = user._birthDay;
+	response["_signature"] = user._signature;
+	response["_adress"] = user._adress;
+	response["_pthone"] = user._pthone;
+	response["_mail"] = user._mail;
+	
+	string msg = response.toStyledString();
+	writer.writeData(msg);
+	this->send(conn, writer);
 }

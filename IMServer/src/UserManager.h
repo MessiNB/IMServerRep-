@@ -9,6 +9,7 @@
 #include<set>
 #include <list>
 #include<mutex>
+
 class User
 {
 public:
@@ -56,9 +57,13 @@ public:
 	// 加载用户关系
 	bool loadRelation(int32_t userId, std::set<int32_t>& friends);
 
-	// 获取单个用户信息
-	bool getUserInfo(const std::string& username, User& user);
-	bool getUserInfo(const int userid, User& user);
+	// 从缓存获取单个用户信息
+	bool getUserInfoFromCached(const std::string& username, User& user);
+	bool getUserInfoFromCached(const int userid, User& user);
+
+	// 从 数据库 获取 单个用户信息
+	bool getUserInfoFromDB(const std::string& username, User& user);
+	bool getUserInfoFromDB(const int userid, User& user);
 
 private:
 	std::list<User> _cachedUsers;  // 用户信息缓存

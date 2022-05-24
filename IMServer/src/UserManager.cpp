@@ -27,6 +27,45 @@ bool UserManager::init()
 	Singleton<MysqlManager>::instance().Query();
 }
 
+// 缓存加载 用户信息 
+bool	  UserManager::getUserInfoFromCached(const string& username, User& user)
+{
+	// TODO：登录需要加锁嘛？
+	for (const auto& it : _cachedUsers)
+	{
+		if (it_userName == username)
+		{
+			user = it;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool UserManager::getUserInfoFromCached(const int& userid, User& user)
+{
+	for (const auto& it : _cachedUsers)
+	{
+		if (it._userId == userid)
+		{
+			user = it;
+			return true;
+		}
+	}
+	return false;
+}
+
+// 数据库加载用户信息
+bool UserManager::getUserInfoFromDB(const std::string& username, User& user)
+{
+	return true;
+}
+
+bool getUserInfoFromDB(const int userid, User& user)
+{
+	return true;
+}
+
 bool UserManager::addUser(User& user)
 {
 	stringstream sql;

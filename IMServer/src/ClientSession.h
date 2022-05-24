@@ -1,3 +1,5 @@
+#pragma once
+
 #include "muduo/base/Logging.h"
 #include "muduo/net/EventLoop.h"
 #include "muduo/net/EventLoopThread.h"
@@ -37,12 +39,14 @@ enum {
 	MSG_TYPE_GROUPCHAT ,						// ÈºÁÄ
 };
 
-enum
+enum RES
 {
 	RES_PARSE_FAILED = 400,   //json ½âÎöÊ§°Ü
 	RES_JOSNTYPE_ERROR,		// json	¸ñÊ½´íÎó
 	RES_REGISTER_FAIED,			// ×¢²áÊ§°Ü
-	RES_LOGIN_FAILED ,			// µÇÂ¼Ê§°Ü
+	RES_LOGIN_NOREGISTER ,			// µÇÂ¼Ê§°Ü(Î´×¢²á£©
+	RES_LOGIN_NOPASSWORD,		// µÇÂ¼Ê§°Ü£¨ÃÜÂë´íÎó)
+
 
 	RES_REGISTER_SUCCESS = 200 , //×¢²á³É¹¦
 	RES_LOGIN_SUCCESS,			//µÇÂ¼³É¹¦

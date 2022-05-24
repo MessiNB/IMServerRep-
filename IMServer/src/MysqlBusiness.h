@@ -1,3 +1,4 @@
+#pragma once
 #include "MysqlTool.h"
 #include <map>
 using std::string;

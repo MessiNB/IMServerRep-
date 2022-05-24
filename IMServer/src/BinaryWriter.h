@@ -1,5 +1,6 @@
-#include <string>
+#pragma once
 
+#include <string>
 
 // 将数据 打包成二进制的包
 class BinaryWriter

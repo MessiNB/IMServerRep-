@@ -1,3 +1,4 @@
+#pragma once
 #include <mysql/mysql.h>
 #include <mysql/errmsg.h>
 #include <unistd.h>

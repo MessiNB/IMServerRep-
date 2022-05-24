@@ -2,9 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\IMServer",
-    "\\IMServer\\out",
     "\\IMServer\\src"
   ],
-  "SelectedNode": "\\IMServer\\src\\UserManager.h",
+  "SelectedNode": "\\IMServer\\src\\UserManager.cpp",
   "PreviewInSolutionExplorer": false
 }
