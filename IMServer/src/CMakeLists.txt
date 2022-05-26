@@ -31,7 +31,7 @@ link_directories(
 include_directories(. ./muduo/base ./muduo/net)
 
 #查找库是否在存在
-find_library(MYSQL_LIB  /usr/lib/x86_64-linux-gnu/libmysqlclient.so)
+find_library(MYSQL_LIB libmysqlclient.so  /usr/lib/x86_64-linux-gnu/)
 if(NOT MYSQL_LIB)
 	message(FATAL_ERROR "not found mysqlclient.so at  /usr/lib/x86_64-linux-gnu/")
 endif(NOT MYSQL_LIB)
