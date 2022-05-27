@@ -1,10 +1,10 @@
 #pragma once
-#include<uinstd.h>
+#include<unistd.h>
 #include<stdio.h>
 #include<sys/types.h>
 #include <errno.h>
-#include"base/Logging.h"
-#include"base/Singleton"
+#include"muduo/base/Logging.h"
+#include"muduo/base/Singleton.h"
 #include<string>
 #include<set>
 #include <list>
@@ -13,8 +13,8 @@
 class User
 {
 public:
-	USer() = default;
-	~USer() = default;
+	User() = default;
+	~User() = default;
 	int32_t				 _userId = 0; //int32_t
 	std::string			 _userName;
 	std::string			 _passWord;
@@ -30,7 +30,7 @@ public:
 	std::string			 _mail;
 	int32_t				 _ownerid ;	// 用于标记群主信息
 
-	set<int32_t>	 _friends;  // 好友id
+	std::set<int32_t>	 _friends;  // 好友id
 
 };
 

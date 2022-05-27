@@ -29,8 +29,8 @@ void ClientSession::onRead(const muduo::net::TcpConnectionPtr& conn, muduo::net:
 	{
 		int32_t packgeSize = 0;
 		BinaryReader::dump(buf->peek(), buf->readableBytes());
-		packgeSize = *(int32_t*)buf->peek()
-		packgeSize = *static_cast<int32_t*> (buf->peek());  // 不真正读出来
+		packgeSize = *(int32_t*)buf->peek();
+	//	packgeSize = *static_cast<int32_t*> (buf->peek());  // 不真正读出来
 		if (buf->readableBytes() < sizeof(int32_t) + packgeSize)  // 数据不完整 （int型的数据大小 + 数据包大小）
 			return;
 		buf->retrieve(sizeof(int32_t));	 // 读掉头部数据大小
@@ -229,7 +229,7 @@ void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, co
 	if (!bRet)
 	{
 		// 未注册
-		sring msg = this->getJsonString(RES_LOGIN_NOREGISTER, "user is not exist or password is incorrecr!");
+		string msg = this->getJsonString(RES_LOGIN_NOREGISTER, "user is not exist or password is incorrecr!");
 		writer.writeData(msg);
 		this->send(conn, writer);
 		return;
@@ -238,7 +238,7 @@ void ClientSession::onLoginResponse(const muduo::net::TcpConnectionPtr& conn, co
 	if (user._passWord != password)
 	{
 		// 密码不正确
-		sring msg = this->getJsonString(RES_LOGIN_NOPASSWORD, "user is not exist or password is incorrecr!");
+		string msg = this->getJsonString(RES_LOGIN_NOPASSWORD, "user is not exist or password is incorrecr!");
 		writer.writeData(msg);
 		this->send(conn, writer);
 		return;
