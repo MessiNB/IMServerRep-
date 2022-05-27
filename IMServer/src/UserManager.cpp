@@ -70,8 +70,8 @@ bool UserManager::addUser(User& user)
 {
 	stringstream sql;
 	sql << "INSERT INTO user(user_id,username,nickname,password,register_time)" <<
-		"VALUES(" << _currentUserId+1 << ",'" << user.username << "','" <<
-		user._nickname << "','" << user._password << "',NOW())";
+		"VALUES(" << _currentUserId+1 << ",'" << user._userName << "','" <<
+		user._nickName << "','" << user._nickName<< "',NOW())";
 	bool result = Singleton<MysqlManager>::instance().excute(sql.str());
 	if (result == false)
 		return false;
