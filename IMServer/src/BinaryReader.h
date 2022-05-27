@@ -21,10 +21,34 @@ public:
 
 
 	template<class T>
-	bool readData(T& data);
+	bool readData(T& data)
+	{
+		if (_index + sizeof(T) > _msg.size())  // 消息中已没有数据
+			return false;
+		memcpy(&data, _msg.c_str() + _index, sizeof(T));
+		_index += sizeof(T);
+	}
+
 
 	template<>
-	bool readData(std::string& data);
+	bool readData(std::string& data)
+	{
+		memcpy((char*)data.c_str(), _msg.c_str() + _index, data.size());
+		_index += data.size();
+		// TODO：处理结构体数据
+		return true;
+	}
+
+	static void dump(const string& buf) {
+		dump(buf.c_str(), buf.size());
+	}
+	static void dump(const char* buf, size_t size) {
+		for (size_t i = 0; i < size; i++) {
+			if (i != 0 && ((i % 16) == 0))printf("\r\n");
+			printf("%02X ", (unsigned)(buf[i]) & 0xFF);
+		}
+		printf("\r\n");
+	}
 
 private:
 	string _msg;					// 整个二进制包
