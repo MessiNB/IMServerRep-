@@ -23,12 +23,10 @@ bool UserManager::init()
 		}
 		
 	}
-
-	Singleton<MysqlManager>::instance().query();
 }
 
 // 缓存加载 用户信息 
-bool	  UserManager::getUserInfoFromCached(const string& username, User& user)
+bool UserManager::getUserInfoFromCached(const string& username, User& user)
 {
 	// TODO：登录需要加锁嘛？
 	for (const auto& it : _cachedUsers)
@@ -42,7 +40,7 @@ bool	  UserManager::getUserInfoFromCached(const string& username, User& user)
 	return false;
 }
 
-bool UserManager::getUserInfoFromCached(const int& userid, User& user)
+bool UserManager::getUserInfoFromCached(const int userid, User& user)
 {
 	for (const auto& it : _cachedUsers)
 	{
