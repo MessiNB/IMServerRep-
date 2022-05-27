@@ -15,7 +15,7 @@ bool UserManager::init()
 	}
 
 	// 加载 用户关系 
-	for (auto& iter .: _cachedUsers)  // 遍历用户信息 列表
+	for (auto& iter : _cachedUsers)  // 遍历用户信息 列表
 	{
 		if (!loadRelation(iter._userId, iter._friends))
 		{
@@ -24,7 +24,7 @@ bool UserManager::init()
 		
 	}
 
-	Singleton<MysqlManager>::instance().Query();
+	Singleton<MysqlManager>::instance().query();
 }
 
 // 缓存加载 用户信息 
@@ -33,7 +33,7 @@ bool	  UserManager::getUserInfoFromCached(const string& username, User& user)
 	// TODO：登录需要加锁嘛？
 	for (const auto& it : _cachedUsers)
 	{
-		if (it_userName == username)
+		if (it._userName == username)
 		{
 			user = it;
 			return true;
@@ -61,7 +61,7 @@ bool UserManager::getUserInfoFromDB(const std::string& username, User& user)
 	return true;
 }
 
-bool getUserInfoFromDB(const int userid, User& user)
+bool UserManager::getUserInfoFromDB(const int userid, User& user)
 {
 	return true;
 }
@@ -71,7 +71,7 @@ bool UserManager::addUser(User& user)
 	stringstream sql;
 	sql << "INSERT INTO user(user_id,username,nickname,password,register_time)" <<
 		"VALUES(" << _currentUserId+1 << ",'" << user.username << "','" <<
-		user.nickname << "','" << user.password << "',NOW())";
+		user._nickname << "','" << user._password << "',NOW())";
 	bool result = Singleton<MysqlManager>::instance().excute(sql.str());
 	if (result == false)
 		return false;
@@ -83,7 +83,7 @@ bool UserManager::addUser(User& user)
 	user._ownerid = 0;
 	{
 		std::lock_guard<mutex> guard(_mutex);
-		m_cachedUsers.push_back(user);
+		_cachedUsers.push_back(user);
 	}
 	return true;
 }
@@ -102,7 +102,7 @@ bool UserManager::loadUsers()
 	{
 		Field* row = res->Fetch();
 		User user;
-		user.userid = row[0].toInt32();
+		user._userId = row[0].toInt32();
 		if (user._userId > _currentUserId)
 			_currentUserId = user._userId;	//更新当前最大 user_id;
 		user._userName = row[1].getValue();
@@ -126,7 +126,7 @@ bool UserManager::loadRelation(int32_t userid,  set<int32_t>& friends)
 	stringstream sql;
 	sql << "SELECT user_id1, user_id2 FROM user_relationship WHERE user_id1=" << userid << " OR user_id2=" << userid << " ;";
 	QueryResultPtr res = Singleton<MysqlManager>::instance().Query(sql.str());
-	if (re == nullptr)
+	if (res == nullptr)
 		return false;
 	while (res->nextRow())
 	{

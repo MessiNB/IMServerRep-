@@ -77,7 +77,7 @@ class Timestamp : public muduo::copyable,
   {
     return Timestamp(static_cast<int64_t>(t) * kMicroSecondsPerSecond + microseconds);
   }
-
+public:
   static const int kMicroSecondsPerSecond = 1000 * 1000;
 
  private:
