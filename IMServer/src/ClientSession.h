@@ -10,6 +10,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include "BinaryReader.h"
 #include "BinaryWriter.h"
+#include"jsoncpp/json.h"
 using namespace muduo;
 using namespace muduo::net;
 using namespace boost::uuids;
@@ -70,7 +71,7 @@ public:
 		return _sessionId;
 	}
 
-	std::string getJsonString(int code , const std::stirng& msg  )
+	std::string getJsonString(int code , const std::string& msg  )
 	{
 		Json::Value value;
 		value["code"] = code;
@@ -85,7 +86,7 @@ public:
 		writer.clear();
 		int len = out.size();
 		writer.writeData(len); // 获取包长度
-		out = writer.getMsg + out;
+		out = writer.getMsg() + out;
 		if (conn != NULL)
 		{
 			conn->send(out.c_str(), out.size());

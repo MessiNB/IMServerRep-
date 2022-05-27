@@ -22,30 +22,3 @@ void BinaryWriter::compress(size_t len, string& out)				// 对小数据进行压缩
 	}
 }
 
-
-template <class T>
-bool BinaryWriter::writeData(T& data)
-{
-	_msg.resize(_index + sizeof(T));
-	memcpy((char*)_msg.c_str(), &data, sizeof(T));
-	_index += sizeof(T);
-	return true;
-}
-
-template<>
-bool BinaryWriter::writeData(std::string& data)
-{
-		
-		std::string out;
-		compress(data.size(), out);
-		_msg.append(out.c_str(), out.size());
-		_index += out.size();
-
-		if (data.size() > 0)
-		{
-			_msg.append(data.c_str(), data.size());
-			_index += data.size();
-		}
-	
-	return false;
-}

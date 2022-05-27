@@ -1,5 +1,4 @@
 #include "ClientSession.h"
-#include"jsoncpp/json.h"
 #include <iostream>
 #include "UserManager.h"
 #include "muduo/base/Singleton.h"
@@ -16,7 +15,6 @@ ClientSession::ClientSession(const TcpConnectionPtr& conn)
 
 	// 绑定消息事件
 	(*client)->setMessageCallback(std::bind(&ClientSession::onRead, this, std::placeholders::_1, _2, _3));
-
 
 }
 
@@ -96,7 +94,6 @@ bool ClientSession::process(const muduo::net::TcpConnectionPtr& conn, string msg
 	default:
 		break;
 	}
-	
 	return true;
 }
 

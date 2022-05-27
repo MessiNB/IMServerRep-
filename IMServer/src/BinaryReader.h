@@ -29,8 +29,6 @@ public:
 		_index += sizeof(T);
 	}
 
-
-	template<>
 	bool readData(std::string& data)
 	{
 		memcpy((char*)data.c_str(), _msg.c_str() + _index, data.size());
