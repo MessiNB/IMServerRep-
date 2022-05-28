@@ -114,7 +114,7 @@ int main(int argc, char* argv[], char* env[])
 	muduo::net::EventLoop loop;
 
 	//  加载数据库相关
-	if (Singleton<MysqlManager>::instance().init("127.0.0.1","root","123456","IMServer",3306) == false)
+	if (Singleton<MysqlManager>::instance().init("10.0.20.17","root","wanzg666","IMServer",3306) == false)
 	{
 		cout << "database init false ";
 		return -2;
