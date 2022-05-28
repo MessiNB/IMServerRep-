@@ -1,4 +1,4 @@
-#include "MysqlBusiness.h"
+﻿#include "MysqlBusiness.h"
 #include <sstream>
 MysqlManager::MysqlManager()
 {
@@ -63,6 +63,7 @@ bool MysqlManager::init(const string& host, const string& user, const string& pw
 		if (createDataBase() == false)
 			return false;
 	}
+	cout << __FILE__ << "( " << __LINE__")\r\n";
 	// TODO: 检查表
 	std::map < std::string, MysqlManager::sTableInfo>::iterator it = _mTables.begin();
 	for (; it != _mTables.end(); it++)
@@ -80,10 +81,12 @@ bool MysqlManager::checkDatabase()
 {
 	if (NULL == _mysqlToolPtr)
 		return false;
+	cout << __FILE__ << "( " << __LINE__")\r\n";
 	QueryResultPtr reslut = _mysqlToolPtr->query("show databases;");
 	if (NULL == reslut)
 		return false;
 
+	cout << __FILE__ << "( " << __LINE__")\r\n";
 	Field* row = reslut->Fetch();
 	std::string	 dbName = _mysqlToolPtr->getDBName();
 
@@ -93,6 +96,7 @@ bool MysqlManager::checkDatabase()
 			break;
 		if (dbName == row[0].getValue())
 		{
+			cout << "找到 " << dbName << endl;
 			reslut->end();
 			return true;
 		}
@@ -109,58 +113,58 @@ bool MysqlManager::checkTable(const std::string tableName)
 	sql << "desc " << tableName << ";";
 	QueryResultPtr result = _mysqlToolPtr->query(sql.str());
 
-	//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟?
+	//没有则返回
 	if (NULL == result)
 	{
 		return false;
 	}
 
-	std::map<std::string, sFieldInfo> map_reset(_mTables[tableName].mFields);  // 要追锟接碉拷
-	std::map<std::string, sFieldInfo> map_change;									  // 要锟斤拷锟铰碉拷
+	//std::map<std::string, sFieldInfo> map_reset(_mTables[tableName].mFields);  // 需要追加的 字段（当前为 代码中）
+	//std::map<std::string, sFieldInfo> map_change;									  // 休要修改的 字段
 
-	// 锟斤拷锟斤拷锟角凤拷锟斤拷确, 锟街讹拷锟斤拷锟斤拷锟街讹拷锟斤拷锟斤拷
-	Field* fields = result->Fetch();
-	while (NULL != fields)
-	{
-		if (result->nextRow() == false)
-			break;
-		std::string name = fields[0].getValue();  //锟斤拷锟捷匡拷锟斤拷锟街讹拷锟斤拷
-		std::string type = fields[1].getValue();  //锟斤拷锟捷匡拷锟斤拷锟街讹拷锟斤拷锟斤拷
-		auto it = _mTables[tableName].mFields.find(name);
-		if (it == _mTables[tableName].mFields.end())
-		{
-			// TODO: 锟斤拷锟斤拷没锟叫革拷锟街讹拷
-			continue;
-		}
-		map_reset.erase(name);  // 锟斤拷锟捷匡拷锟叫和达拷锟斤拷锟叫讹拷锟叫ｏ拷锟斤拷 要追锟接碉拷锟斤拷删锟斤拷
-		if (it->second.sType != type)
-		{
-			// 锟街讹拷锟斤拷锟酵诧拷同锟斤拷锟睫革拷锟街讹拷锟斤拷锟斤拷
-			map_change.insert(PairFiled(name, it->second));
-		}
-	}
-	result->end();
+	//// 获取查询字段
+	//Field* fields = result->Fetch();
+	//while (NULL != fields)
+	//{
+	//	if (result->nextRow() == false)
+	//		break;
+	//	std::string name = fields[0].getValue();  // 获取数据库字段名
+	//	std::string type = fields[1].getValue();  //获取 数据库中字段类型
+	//	auto it = _mTables[tableName].mFields.find(name);
+	//	if (it == _mTables[tableName].mFields.end())
+	//	{
+	//		//TODO：数据库中 有，代码中没有，不管
+	//		continue;
+	//	}
+	//	map_reset.erase(name);  // 锟斤拷锟捷匡拷锟叫和达拷锟斤拷锟叫讹拷锟叫ｏ拷锟斤拷 要追锟接碉拷锟斤拷删锟斤拷
+	//	if (it->second.sType != type)
+	//	{
+	//		// 锟街讹拷锟斤拷锟酵诧拷同锟斤拷锟睫革拷锟街讹拷锟斤拷锟斤拷
+	//		map_change.insert(PairFiled(name, it->second));
+	//	}
+	//}
+	//result->end();
 
-	if (map_reset.size() > 0)
-	{
-		auto it = map_reset.begin();
-		std::stringstream reset_sql;
-		for (; it!=map_reset.end(); it++)
-		{
-			reset_sql << "alter table " << tableName << " add column " << it->second.sDesc << " " << it->second.sType << ";";
-			if (!_mysqlToolPtr->execute(reset_sql.str()))
-				return false;
-		}
-	}
+	//if (map_reset.size() > 0)
+	//{
+	//	auto it = map_reset.begin();
+	//	std::stringstream reset_sql;
+	//	for (; it != map_reset.end(); it++)
+	//	{
+	//		reset_sql << "alter table " << tableName << " add column " << it->second.sDesc << " " << it->second.sType << ";";
+	//		if (!_mysqlToolPtr->execute(reset_sql.str()))
+	//			return false;
+	//	}
+	//}
 
-	if (map_change.size() > 0)
-	{
-		auto it = map_change.begin();
-		std::stringstream change_sql;
-		change_sql << "alter table " << tableName << " modify column " << it->second.sDesc << " " << it->second.sType << ";";
-		if (!_mysqlToolPtr->execute(change_sql.str()))
-			return false;
-	}
+	//if (map_change.size() > 0)
+	//{
+	//	auto it = map_change.begin();
+	//	std::stringstream change_sql;
+	//	change_sql << "alter table " << tableName << " modify column " << it->second.sDesc << " " << it->second.sType << ";";
+	//	if (!_mysqlToolPtr->execute(change_sql.str()))
+	//		return false;
+	//}
 	return true;
 }
 
@@ -184,9 +188,9 @@ bool MysqlManager::createTable(const sTableInfo& info)
 
 	std::stringstream sql;
 	sql << "create table if not exists " << info.sName << "(";
-	 std::map<std::string, sFieldInfo >::const_iterator it = info.mFields.begin();
+	std::map<std::string, sFieldInfo >::const_iterator it = info.mFields.begin();
 
-	for ( ; it != info.mFields.end() ; it++)
+	for (; it != info.mFields.end(); it++)
 	{
 		if (it != info.mFields.begin())
 			sql << ",";

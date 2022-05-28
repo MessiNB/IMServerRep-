@@ -10,7 +10,6 @@ QueryResult::QueryResult(MYSQL_RES* res = NULL, MyLong rowCount = 0, uint32_t co
 	for (size_t i = 0; i < columnCount; i++)
 	{
 		_fieldName[i] = fields[i].name;  // 获取列名
-
 		//设置type
 		_currentRow[i].setType(toIMType(fields[i].type));
 		// 设置名称
@@ -37,17 +36,17 @@ bool QueryResult::nextRow()
 	}
 
 	// 获取每个列中 数据的长度
-	//unsigned long* pFieldLength = mysql_fetch_lengths(_res);
+	unsigned long* pFieldLength = mysql_fetch_lengths(_res);
 	for (size_t i = 0; i < _columnCount; i++)
 	{
 		if (NULL == row[i])
 		{
 			// 设置 field 为空
-			_currentRow[i].setValue(NULL);
+			_currentRow[i].setValue(NULL,0);
 		}
 		else
 		{
-			_currentRow[i].setValue(row[i]);
+			_currentRow[i].setValue(row[i], pFieldLength[i]);
 			//设置 field的值
 		}
 	}

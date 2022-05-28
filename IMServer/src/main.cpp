@@ -127,8 +127,7 @@ int main(int argc, char* argv[], char* env[])
 	}
 
 
-
-	if (Singleton<IMServer>::instance().init("0.0.0.0", 9527, &loop) == false)
+	if (Singleton<IMServer>::instance().init("127.0.0.1", 9527, &loop) == false)
 	{
 		cout << "server init failed" << std::endl;
 		return -1;

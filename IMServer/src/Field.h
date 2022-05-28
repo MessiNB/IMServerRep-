@@ -44,6 +44,7 @@ public:
 private:
 	std::string _name;  // 字段名
 	std::string _value;	  // 值
+	size_t _len = 0;
 	IMDataTypes _type = TYPE_NONE;	  // 类型（默认未知类型）
 	bool  _isEmpty = true; // 值是否为空
 };

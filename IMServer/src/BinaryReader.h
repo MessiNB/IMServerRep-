@@ -26,7 +26,11 @@ public:
 	{
 		if (_index + sizeof(T) > _msg.size())  // 消息中已没有数据
 			return false;
-		memcpy(&data, _msg.c_str() + _index, sizeof(T));
+		char* pData = (char*)&data;
+		for (size_t i = 0; i < sizeof(T); i++)
+		{
+			pData = *( _msg.c_str() + _index + sizeof(T) - (i - 1));
+		}
 		_index += sizeof(T);
 		return true;
 	}
