@@ -1,6 +1,6 @@
 #include "BinaryReader.h"
 #include <cstring>
-BinaryReader::operator=(const BinaryReader& reader)
+BinaryReader& BinaryReader::operator=(const BinaryReader& reader)
 {
 		if (this != &reader)
 		{

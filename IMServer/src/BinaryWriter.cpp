@@ -1,5 +1,5 @@
 #include "BinaryWriter.h"
-
+using namespace std;
 void BinaryWriter::compress(size_t len, string& out)				// 对小数据进行压缩
 {
 	char c = 0;

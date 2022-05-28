@@ -38,8 +38,8 @@ public:
 class UserManager
 {
 public:
-	UserManager();
-	~UserManager();
+	UserManager()=default;
+	~UserManager()=default;
 
 	bool init();
 
