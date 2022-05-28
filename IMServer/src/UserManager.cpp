@@ -23,6 +23,7 @@ bool UserManager::init()
 		}
 		
 	}
+	return true;
 }
 
 // 缓存加载 用户信息 

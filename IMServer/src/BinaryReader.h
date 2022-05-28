@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include<cstring>
 using std::string;
 
 
@@ -27,6 +28,7 @@ public:
 			return false;
 		memcpy(&data, _msg.c_str() + _index, sizeof(T));
 		_index += sizeof(T);
+		return true;
 	}
 
 	bool readData(std::string& data)

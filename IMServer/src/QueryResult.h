@@ -59,7 +59,7 @@ public:
 		_columnCount = 0;
 		_fieldName.clear();
 		_currentRow.clear();
-		if (_res)
+		if (_res != NULL)
 		{
 			mysql_free_result(_res);
 			_res = NULL;

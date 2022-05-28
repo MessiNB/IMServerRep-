@@ -19,7 +19,8 @@ const std::string& pwd, const std::string& dbName, const uint32_t port)
 
 	//����
 	_mysql = mysql_real_connect(_mysql, host.c_str(), user.c_str(), pwd.c_str(), dbName.c_str(), port, NULL, 0);
-
+	int sql_errno = mysql_errno(_mysql);
+        std::cout << "mysql connect error :[" << sql_errno <<":]" << mysql_error(_mysql) << std::endl;
 	std::cout << "[host: " << host << "], [user: " << user << "] , [pwd: " << pwd << "] , [dbname: " << dbName << "]" << std::endl;
 
 	if (_mysql != NULL)
